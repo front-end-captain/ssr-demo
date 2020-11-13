@@ -1,0 +1,48 @@
+{
+  "name": "ssr-demo",
+  "version": "1.0.0",
+  "description": "a project to research server side render base on react.js",
+  "main": "index.js",
+  "scripts": {
+    "serve": "node scripts/serve.js",
+    "build": "node scripts/build.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/front-end-captain/ssr-demo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/front-end-captain/ssr-demo/issues"
+  },
+  "homepage": "https://github.com/front-end-captain/ssr-demo#readme",
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
+    "@babel/preset-react": "^7.7.0",
+    "babel-loader": "^8.2.1",
+    "chalk": "^4.1.0",
+    "css-loader": "^5.0.1",
+    "html-webpack-plugin": "^4.5.0",
+    "less": "^3.12.2",
+    "less-loader": "^7.1.0",
+    "memory-fs": "^0.5.0",
+    "node-ipc": "^9.1.2",
+    "open": "^7.3.0",
+    "portfinder": "^1.0.28",
+    "prettier": "^2.1.2",
+    "style-loader": "^2.0.0",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^4.2.0",
+    "webpack-dev-server": "^3.11.0",
+    "webpack-merge": "^5.3.0",
+    "webpackbar": "^5.0.0-3"
+  },
+  "dependencies": {
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-hot-loader": "^4.13.0"
+  }
+}

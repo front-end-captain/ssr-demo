@@ -1,0 +1,24 @@
+# https://help.github.com/ignore-files/
+
+# Logs
+logs
+*.log
+.cache
+
+# Runtime data
+build
+dist
+
+
+# Dependency directories
+**/node_modules/**
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# IDE
+.vscode
+.idea
