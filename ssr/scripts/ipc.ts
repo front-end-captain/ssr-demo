@@ -1,16 +1,37 @@
-const ipc = require("node-ipc");
+import ipc from "node-ipc";
 
+const DEFAULT_ID = process.env.LUBAN_CLI_IPC || "@luban/cli";
 const DEFAULT_IDLE_TIMEOUT = 3000;
 const DEFAULT_OPTIONS = {
-  networkId: "brendan",
+  networkId: DEFAULT_ID,
   autoConnect: true,
   disconnectOnIdle: false,
   idleTimeout: DEFAULT_IDLE_TIMEOUT,
   namespaceOnProject: true,
 };
 
+const PROJECT_ID = process.env.LUBAN_CLI_PROJECT_ID;
+
+type Data = {
+  _projectId?: string;
+  ok?: boolean;
+  done?: boolean;
+  _data?: Data;
+  [key: string]: unknown;
+};
+
 class IpcMessenger {
-  constructor(options = {}) {
+  private id: string;
+  private connected: boolean;
+  private connecting: boolean;
+  private disconnecting: boolean;
+  private options: Partial<typeof DEFAULT_OPTIONS>;
+  private queue: null | Data[];
+  private listeners: Array<(data: Data) => void>;
+  private disconnectTimeout: number;
+  private idleTimer: NodeJS.Timeout | null;
+
+  constructor(options: Partial<typeof DEFAULT_OPTIONS> = {}) {
     options = Object.assign({}, DEFAULT_OPTIONS, options);
     ipc.config.id = this.id = options.networkId || "";
     ipc.config.retry = 1500;
@@ -28,23 +49,34 @@ class IpcMessenger {
     this.idleTimer = null;
 
     // override process.exit
-    process.exit = (code) => {
+    // Prevent forced process exit
+    // (or else ipc messages may not be sent before kill)
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
+    process.exit = (code: number): void => {
       process.exitCode = code;
     };
 
     this._reset();
   }
 
-  checkConnection() {
+  public checkConnection(): void {
     if (!ipc.of[this.id]) {
       this.connected = false;
     }
   }
 
-  send(data, type = "message") {
+  public send(data: Data, type = "message"): void {
     this.checkConnection();
 
     if (this.connected) {
+      if (this.options.namespaceOnProject && PROJECT_ID) {
+        data = {
+          _projectId: PROJECT_ID,
+          _data: data,
+        };
+      }
+
       ipc.of[this.id].emit(type, data);
 
       if (this.idleTimer) {
@@ -67,7 +99,7 @@ class IpcMessenger {
     }
   }
 
-  connect() {
+  public connect(): void {
     this.checkConnection();
 
     if (this.connected || this.connecting) return;
@@ -83,7 +115,7 @@ class IpcMessenger {
     });
   }
 
-  disconnect() {
+  public disconnect(): void {
     this.checkConnection();
 
     if (!this.connected || this.disconnecting) return;
@@ -96,7 +128,7 @@ class IpcMessenger {
 
     this.send({ done: true }, "ack");
 
-    ipc.of[this.id].on("ack", (data) => {
+    ipc.of[this.id].on("ack", (data: Data) => {
       if (data.ok) {
         clearTimeout(ipcTimer);
         this._disconnect();
@@ -104,36 +136,39 @@ class IpcMessenger {
     });
   }
 
-  on(listener) {
+  public on(listener: (data: Data) => void): void {
     this.listeners.push(listener);
   }
 
-  off(listener) {
+  public off(listener: (data: Data) => void): void {
     const index = this.listeners.indexOf(listener);
     if (index !== -1) this.listeners.splice(index, 1);
   }
 
-  _reset() {
+  private _reset(): void {
     this.queue = [];
     this.connected = false;
   }
 
-  _disconnect() {
+  private _disconnect(): void {
     this.connected = false;
     this.disconnecting = false;
     ipc.disconnect(this.id);
     this._reset();
   }
 
-  _onMessage(data) {
+  private _onMessage(data: Data): void {
     this.listeners.forEach((fn) => {
       if (this.options.namespaceOnProject && data._projectId) {
-        return;
+        if (data._projectId === PROJECT_ID && data._data) {
+          data = data._data;
+        } else {
+          return;
+        }
       }
-
       fn(data);
     });
   }
 }
 
-module.exports = { IpcMessenger };
+export { IpcMessenger };

@@ -1,5 +1,22 @@
-function setPublicConfig() {
+import path from "path";
+import webpack from "webpack";
+
+import { SRC_PATH, BUILD_PATH, ASSETS_PATH } from "../path";
+
+export function setServerConfig(): webpack.Configuration {
+  const entry = path.join(SRC_PATH, "server.entry.js");
   return {
+    mode: "development",
+    target: "node",
+    entry: ["react-hot-loader/patch", "@babel/polyfill", entry],
+    output: {
+      path: BUILD_PATH,
+      filename: "server-bundle.js",
+      libraryTarget: "commonjs2",
+      library: "server-output",
+      publicPath: ASSETS_PATH,
+    },
+    externals: Object.keys(require("../../package.json").dependencies),
     module: {
       rules: [
         {
@@ -15,9 +32,6 @@ function setPublicConfig() {
         {
           test: /\.less$/,
           use: [
-            {
-              loader: require.resolve("style-loader"),
-            },
             {
               loader: require.resolve("css-loader"),
               options: {
@@ -41,5 +55,3 @@ function setPublicConfig() {
     },
   };
 }
-
-module.exports = { setPublicConfig };

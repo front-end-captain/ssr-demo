@@ -5,10 +5,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Server</title>
+
+  <%%- meta %>
+	<%%- title %>
+
+	<%%- link %>
+	<%%- style %>
 </head>
 
 <body>
-  <div id="root"><%- CONTENT %></div>
+  <div id="root"><%%- CONTENT %></div>
+
+  <script>
+		window.__INITIAL__STATE__ = <%%- initialState %>
+	</script>
 </body>
 
 </html>

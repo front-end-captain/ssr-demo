@@ -1,22 +1,32 @@
-const url = require("url");
-const chalk = require("chalk");
-const address = require("address");
-const defaultGateway = require("default-gateway");
+/**
+ * Copyright (c) 2015-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file at
+ * https://github.com/facebookincubator/create-react-app/blob/master/LICENSE
+ */
 
-function prepareUrls(
-  protocol,
-  host,
-  port,
-  pathname = "/",
-){
-  const formatUrl = (hostname) =>
+import url from "url";
+import chalk from "chalk";
+import address from "address";
+import defaultGateway from "default-gateway";
+
+export type UrlList = {
+  lanUrlForConfig?: string;
+  lanUrlForTerminal: string;
+  localUrlForTerminal: string;
+  localUrlForBrowser: string;
+};
+
+export function prepareUrls(protocol: string, host: string, port: number, pathname = "/"): UrlList {
+  const formatUrl = (hostname: string): string =>
     url.format({
       protocol,
       hostname,
       port,
       pathname,
     });
-  const prettyPrintUrl = (hostname) =>
+  const prettyPrintUrl = (hostname: string): string =>
     url.format({
       protocol,
       hostname,
@@ -25,8 +35,8 @@ function prepareUrls(
     });
 
   const isUnspecifiedHost = host === "0.0.0.0" || host === "::";
-  let prettyHost;
-  let lanUrlForConfig;
+  let prettyHost: string;
+  let lanUrlForConfig: string | undefined;
   let lanUrlForTerminal = chalk.gray("unavailable");
   if (isUnspecifiedHost) {
     prettyHost = "localhost";
@@ -62,7 +72,3 @@ function prepareUrls(
     localUrlForBrowser,
   };
 }
-
-module.exports = {
-  prepareUrls,
-};
