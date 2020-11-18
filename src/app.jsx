@@ -1,14 +1,10 @@
+import { hot } from "react-hot-loader/root";
 import React from "react";
 
-import { Demo } from "./components/demo";
+import "./app.css";
 
 function App() {
-  return (
-    <div>
-      React server side render demo
-      <Demo />
-    </div>
-  );
+  return <div className="app-wrapper">hello, server side render</div>;
 }
 
-export { App };
+export default hot(App);

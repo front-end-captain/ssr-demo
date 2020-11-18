@@ -3,7 +3,7 @@
 process.env.NODE_ENV = "development";
 process.env.BABEL_ENV = "development";
 
-import url from "url";
+import http from "http";
 import path from "path";
 import webpack from "webpack";
 import WebpackDevServer from "webpack-dev-server";
@@ -13,16 +13,15 @@ import MemoryFS from "memory-fs";
 import express from "express";
 import { log } from "@luban-cli/cli-shared-utils";
 import { createProxyMiddleware } from "http-proxy-middleware";
-import ReactDOMServer from "react-dom/server";
-import ejs from "ejs";
+import BodyParser from "body-parser";
 
 import { prepareUrls, UrlList } from "./prepareURLs";
-import { IpcMessenger } from "./ipc";
 import { getModuleFromString, getTemplate } from "./util";
 
 import { setClientConfig } from "../webpack/client.config";
 import { setServerConfig } from "../webpack/server.config";
 import { ASSETS_PATH } from "../path";
+import { serverSideRender } from "./serverSideRender";
 
 const defaultCSRServerConfig = {
   host: "0.0.0.0",
@@ -32,7 +31,7 @@ const defaultCSRServerConfig = {
 
 const defaultSSRServerConfig = {
   host: "0.0.0.0",
-  port: 4000,
+  port: 3000,
   https: false,
 };
 
@@ -42,39 +41,33 @@ class Serve {
   private protocol: "http" | "https";
   private CSRUrlList: UrlList | null;
   private SSRUrlList: UrlList | null;
+  private csrCompiler: webpack.Compiler | null;
+  private ssrCompiler: webpack.Compiler | null;
+  private csrServer: WebpackDevServer | null;
+  private ssrServer: http.Server | null;
+  private isFirstCSRCompile: boolean;
+  private isFirstSSRCompile: boolean;
 
   constructor() {
     this.protocol = "http";
     this.CSRUrlList = null;
     this.SSRUrlList = null;
+
+    this.csrServer = null;
+    this.ssrServer = null;
+    this.csrCompiler = null;
+    this.ssrCompiler = null;
+
+    this.isFirstCSRCompile = true;
+    this.isFirstSSRCompile = true;
   }
 
   startCSRServer() {
-    const clientConfig = setClientConfig();
+    const clientConfig = setClientConfig("development");
 
     this.CSRUrlList = prepareUrls(this.protocol, defaultCSRServerConfig.host, defaultCSRServerConfig.port, "/");
 
-    const localUrlForBrowser = this.CSRUrlList.localUrlForBrowser;
-
-    const sockjsUrl =
-      "?" +
-      url.format({
-        protocol: this.protocol,
-        port: defaultCSRServerConfig.port,
-        hostname: this.CSRUrlList.lanUrlForConfig || "localhost",
-        pathname: "/sockjs-node",
-      });
-
-    const devClients = [
-      require.resolve("webpack-dev-server/client") + sockjsUrl,
-      require.resolve("webpack/hot/dev-server"),
-    ];
-
-    if (Array.isArray(clientConfig.entry)) {
-      clientConfig.entry = devClients.concat(clientConfig.entry);
-    }
-
-    const compiler = webpack(clientConfig);
+    this.csrCompiler = webpack(clientConfig);
 
     const webpackDevServerOptions: WebpackDevServer.Configuration = {
       clientLogLevel: "info",
@@ -87,28 +80,20 @@ class Serve {
       publicPath: ASSETS_PATH,
       overlay: { warnings: false, errors: true },
       open: false,
-      stats: {
-        version: true,
-        timings: true,
-        colors: true,
-        modules: false,
-        children: false,
-      },
+      stats: false,
+      // stats: {
+      //   version: true,
+      //   timings: true,
+      //   colors: true,
+      //   modules: false,
+      //   children: false,
+      // },
     };
 
-    const server = new WebpackDevServer(compiler, webpackDevServerOptions);
-
-    ["SIGINT", "SIGTERM"].forEach((signal) => {
-      process.on(signal, () => {
-        server.close();
-        process.exit();
-      });
-    });
+    this.csrServer = new WebpackDevServer(this.csrCompiler, webpackDevServerOptions);
 
     return new Promise((resolve, reject) => {
-      let isFirstCompile = true;
-
-      compiler.hooks.done.tap("csr", (stats) => {
+      this.csrCompiler?.hooks.done.tap("csr", (stats) => {
         if (stats.hasErrors()) {
           stats.toJson().errors.forEach((err) => {
             log(err);
@@ -116,8 +101,8 @@ class Serve {
           return;
         }
 
-        if (isFirstCompile) {
-          isFirstCompile = false;
+        if (this.isFirstCSRCompile) {
+          this.isFirstCSRCompile = false;
 
           console.log();
           console.log(`  CSR running at:`);
@@ -125,24 +110,11 @@ class Serve {
           console.log(`  - Network: ${chalk.cyan(this.CSRUrlList?.lanUrlForTerminal)}`);
           console.log();
 
-          open(localUrlForBrowser).catch(() => undefined);
-
-          // Send final app URL
-          const ipc = new IpcMessenger();
-          ipc.send({
-            lubanServer: {
-              url: localUrlForBrowser,
-            },
-          });
-
-          resolve({
-            server,
-            url: localUrlForBrowser,
-          });
+          resolve();
         }
       });
 
-      server.listen(defaultCSRServerConfig.port, defaultCSRServerConfig.host, (err) => {
+      this.csrServer?.listen(defaultCSRServerConfig.port, defaultCSRServerConfig.host, (err) => {
         if (err) {
           reject(err);
         }
@@ -152,14 +124,17 @@ class Serve {
 
   startSSRServer() {
     const server = express();
-    const ssrWebpackConfig = setServerConfig();
-    const ssrCompiler = webpack(ssrWebpackConfig);
+    const ssrWebpackConfig = setServerConfig("development");
 
-    ssrCompiler.outputFileSystem = mfs;
+    this.SSRUrlList = prepareUrls(this.protocol, defaultSSRServerConfig.host, defaultSSRServerConfig.port, "/");
+
+    this.ssrCompiler = webpack(ssrWebpackConfig);
+
+    this.ssrCompiler.outputFileSystem = mfs;
 
     let serverBundle = {};
 
-    ssrCompiler.watch({}, (error, stats) => {
+    this.ssrCompiler.watch({}, (error, stats) => {
       if (error) {
         throw error;
       }
@@ -182,36 +157,45 @@ class Serve {
       serverBundle = m.exports;
     });
 
-    this.SSRUrlList = prepareUrls(this.protocol, defaultSSRServerConfig.host, defaultSSRServerConfig.port, "/");
+    server.use((request, _, next) => {
+      console.log();
+      console.log(
+        "The request type is " +
+          chalk.green(request.method) +
+          "; request url is " +
+          chalk.green(request.originalUrl) +
+          "; " +
+          chalk.yellow(new Date().toUTCString()),
+      );
+      next();
+    });
 
-    server.use(
-      "/assets/",
-      createProxyMiddleware({
-        target: this.CSRUrlList?.localUrlForBrowser,
-      }),
-    );
+    server.use(BodyParser.json());
+    server.use(BodyParser.urlencoded({ extended: false }));
 
-    server.get("*", (request, response, next) => {
+    const assetsProxy = createProxyMiddleware({
+      ws: true,
+      target: this.CSRUrlList?.localUrlForBrowser,
+    });
+
+    server.use(ASSETS_PATH, assetsProxy);
+
+    server.get("*", (_, response, next) => {
       if (!serverBundle) {
         return response.send("waiting for serverBundle...");
       }
-      getTemplate(this.CSRUrlList?.localUrlForBrowser + "server.ejs")
+
+      const templateUrl = this.CSRUrlList?.localUrlForBrowser + ASSETS_PATH + "server.ejs";
+
+      getTemplate(templateUrl.replace(/(\d+)[(^/)](\/)+/, "$1$2"))
         .then((template) => {
-          const content = ReactDOMServer.renderToString((serverBundle as any).default);
-
-          const html = ejs.render(template, { CONTENT: content });
-
-          // console.log(html);
-
-          return response.send(html);
+          return response.send(serverSideRender(serverBundle, template));
         })
         .catch(next);
     });
 
     return new Promise((resolve, reject) => {
-      let isFirstCompile = true;
-
-      ssrCompiler.hooks.done.tap("ssr", (stats) => {
+      this.ssrCompiler?.hooks.done.tap("ssr", (stats) => {
         if (stats.hasErrors()) {
           stats.toJson().errors.forEach((err) => {
             log(err);
@@ -219,31 +203,38 @@ class Serve {
           return;
         }
 
-        if (isFirstCompile) {
-          isFirstCompile = false;
+        if (this.isFirstSSRCompile) {
+          this.isFirstSSRCompile = false;
 
           console.log();
-          console.log(` SSR running at:`);
+          console.log(`  SSR running at:`);
           console.log(`  - Local:   ${chalk.cyan(this.SSRUrlList?.localUrlForTerminal)}`);
           console.log(`  - Network: ${chalk.cyan(this.SSRUrlList?.lanUrlForTerminal)}`);
           console.log();
 
-          resolve({
-            server,
-            url: this.SSRUrlList?.localUrlForBrowser,
-          });
+          resolve();
         }
       });
 
-      server.listen(4000, defaultCSRServerConfig.host, () => {
-        console.log("ssr server listening at: 4000");
-      });
+      this.ssrServer = server.listen(defaultSSRServerConfig.port, defaultSSRServerConfig.host);
+
+      this.ssrServer.on("upgrade", assetsProxy.upgrade as (...args: any[]) => void);
+      this.ssrServer.on("error", (error) => reject(error));
     });
   }
 
   run() {
-    Promise.all([this.startCSRServer(), this.startSSRServer()]).then(() => {
-      // TODO
+    return Promise.all([this.startCSRServer(), this.startSSRServer()]).then(() => {
+      open(this.CSRUrlList?.localUrlForBrowser || "").catch(() => undefined);
+      open(this.SSRUrlList?.localUrlForBrowser || "").catch(() => undefined);
+
+      ["SIGINT", "SIGTERM"].forEach((signal) => {
+        process.on(signal, () => {
+          this.ssrServer?.close();
+          this.csrServer?.close();
+          process.exit();
+        });
+      });
     });
   }
 }

@@ -1,2 +1,4 @@
-import { App } from "./app";
-export default App;
+import React from "react";
+import App from "./app";
+
+export default () => <App />;
