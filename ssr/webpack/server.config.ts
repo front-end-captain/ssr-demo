@@ -1,10 +1,13 @@
 import path from "path";
 import webpack from "webpack";
 import WebpackBar from "webpackbar";
+import nodeExternals from "webpack-node-externals";
 
 import { SRC_PATH, BUILD_PATH, ASSETS_PATH } from "../path";
 
-export function setServerConfig(mode: webpack.Configuration["mode"]): webpack.Configuration {
+export function setServerConfig(
+  mode: webpack.Configuration["mode"]
+): webpack.Configuration {
   const entry = path.join(SRC_PATH, "server.entry.js");
 
   return {
@@ -18,7 +21,11 @@ export function setServerConfig(mode: webpack.Configuration["mode"]): webpack.Co
       library: "server-output",
       publicPath: ASSETS_PATH,
     },
-    externals: Object.keys(require("../../package.json").dependencies),
+    externals: [
+      nodeExternals({
+        allowlist: /\.(css|less|sass|scss)$/,
+      }),
+    ],
     module: {
       rules: [
         {
@@ -34,22 +41,6 @@ export function setServerConfig(mode: webpack.Configuration["mode"]): webpack.Co
         {
           test: /\.css$/,
           loader: require.resolve("css-loader"),
-          // use: [
-          //   {
-          //     loader: require.resolve("css-loader"),
-          //     options: {
-          //       importLoaders: 1,
-          //       modules: {
-          //         mode: "global",
-          //         exportGlobals: true,
-          //         localIdentName: "[name]__[local]__[hash:base64:5]",
-          //       },
-          //     },
-          //   },
-          //   {
-          //     loader: require.resolve("less-loader"),
-          //   },
-          // ],
         },
       ],
     },
@@ -60,7 +51,10 @@ export function setServerConfig(mode: webpack.Configuration["mode"]): webpack.Co
       __dirname: true,
       __filename: true,
     },
-    plugins: [new WebpackBar({ name: "[Server]ssr-demo", color: "#41b883" })],
+    plugins: [
+      new WebpackBar({ name: "[Server]ssr-demo", color: "#41b883" }),
+      new webpack.DefinePlugin({ __IS_BROWSER__: false }),
+    ],
     optimization: {
       splitChunks: false,
     },

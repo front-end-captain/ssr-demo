@@ -6,11 +6,16 @@ import WebpackBar from "webpackbar";
 
 import { SRC_PATH, BUILD_PATH, TEMPLATE_PATH, ASSETS_PATH } from "../path";
 
-export function setClientConfig(mode: webpack.Configuration["mode"]): webpack.Configuration {
+export function setClientConfig(
+  mode: webpack.Configuration["mode"]
+): webpack.Configuration {
   const entry = path.join(SRC_PATH, "client.entry.js");
   return {
     mode: mode || "development",
-    devtool: mode === "development" ? "@cheap-module-eval-source-map" : "@cheap-source-map",
+    devtool:
+      mode === "development"
+        ? "@cheap-module-eval-source-map"
+        : "@cheap-source-map",
     entry: mode === "development" ? ["react-hot-loader/patch", entry] : [entry],
     output: {
       path: BUILD_PATH,
@@ -83,6 +88,7 @@ export function setClientConfig(mode: webpack.Configuration["mode"]): webpack.Co
         chunkFilename: mode === "development" ? "[id].css" : "[id]-[hash].css",
       }),
       new WebpackBar({ name: "[Client]ssr-demo", color: "#41b883" }),
+      new webpack.DefinePlugin({ __IS_BROWSER__: true }),
     ],
   };
 }

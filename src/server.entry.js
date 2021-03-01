@@ -1,4 +1,7 @@
 import React from "react";
-import App from "./app";
 
-export default () => <App />;
+console.log("__IS_BROWSER__", __IS_BROWSER__);
+
+import entry from "./entry";
+
+export default entry.provider;

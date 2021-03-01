@@ -1,7 +1,11 @@
 import React from "react";
 import { render, hydrate } from "react-dom";
-import App from "./app";
 
-const root = document.getElementById("root");
+import entry from "./entry";
 
-module.hot? render(<App />, root) : hydrate(<App />, root);
+console.log("__IS_BROWSER__", __IS_BROWSER__);
+
+const Root = entry.provider;
+const root = document.getElementById(entry.root);
+
+module.hot? render(<Root />, root) : hydrate(<Root />, root);
