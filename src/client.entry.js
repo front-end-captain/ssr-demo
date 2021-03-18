@@ -1,7 +1,7 @@
 import React from "react";
 import { render, hydrate } from "react-dom";
 
-import entry from "./entry";
+import entry from ".";
 
 console.log("__IS_BROWSER__", __IS_BROWSER__);
 
