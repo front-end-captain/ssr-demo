@@ -11,17 +11,20 @@ import chalk from "chalk";
 import open from "open";
 import MemoryFS from "memory-fs";
 import express from "express";
-import { log } from "@luban-cli/cli-shared-utils";
+import { log, info } from "@luban-cli/cli-shared-utils";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import BodyParser from "body-parser";
+import fs from "fs-extra";
 
 import { prepareUrls, UrlList } from "./prepareURLs";
-import { getModuleFromString, getTemplate } from "./util";
+import { getModuleFromString, getTemplate, render, delay } from "./util";
 
 import { setClientConfig } from "../webpack/client.config";
 import { setServerConfig } from "../webpack/server.config";
 import { ASSETS_PATH } from "../path";
 import { serverSideRender } from "./serverSideRender";
+
+import { SRC_PATH, ROOT_PATH } from "../path";
 
 const defaultCSRServerConfig = {
   host: "0.0.0.0",
@@ -62,7 +65,7 @@ class Serve {
     this.isFirstSSRCompile = true;
   }
 
-  startCSRServer() {
+  private startCSRServer() {
     const clientConfig = setClientConfig("development");
 
     this.CSRUrlList = prepareUrls(this.protocol, defaultCSRServerConfig.host, defaultCSRServerConfig.port, "/");
@@ -93,7 +96,7 @@ class Serve {
     this.csrServer = new WebpackDevServer(this.csrCompiler, webpackDevServerOptions);
 
     return new Promise((resolve, reject) => {
-      this.csrCompiler?.hooks.done.tap("csr", (stats) => {
+      this.csrCompiler?.hooks.done.tap("done", (stats) => {
         if (stats.hasErrors()) {
           stats.toJson().errors.forEach((err) => {
             log(err);
@@ -122,7 +125,7 @@ class Serve {
     });
   }
 
-  startSSRServer() {
+  private startSSRServer() {
     const server = express();
     const ssrWebpackConfig = setServerConfig("development");
 
@@ -157,18 +160,18 @@ class Serve {
       serverBundle = m.exports;
     });
 
-    server.use((request, _, next) => {
-      console.log();
-      console.log(
-        "The request type is " +
-          chalk.green(request.method) +
-          "; request url is " +
-          chalk.green(request.originalUrl) +
-          "; " +
-          chalk.yellow(new Date().toUTCString()),
-      );
-      next();
-    });
+    // server.use((request, _, next) => {
+    //   console.log();
+    //   console.log(
+    //     "The request type is " +
+    //       chalk.green(request.method) +
+    //       "; request url is " +
+    //       chalk.green(request.originalUrl) +
+    //       "; " +
+    //       chalk.yellow(new Date().toUTCString()),
+    //   );
+    //   next();
+    // });
 
     server.use(BodyParser.json());
     server.use(BodyParser.urlencoded({ extended: false }));
@@ -176,11 +179,12 @@ class Serve {
     const assetsProxy = createProxyMiddleware({
       ws: true,
       target: this.CSRUrlList?.localUrlForBrowser,
+      logLevel: "silent",
     });
 
     server.use(ASSETS_PATH, assetsProxy);
 
-    server.get("*", (_, response, next) => {
+    server.get("*", (req, response, next) => {
       if (!serverBundle) {
         return response.send("waiting for serverBundle...");
       }
@@ -189,13 +193,13 @@ class Serve {
 
       getTemplate(templateUrl.replace(/(\d+)[(^/)](\/)+/, "$1$2"))
         .then((template) => {
-          return response.send(serverSideRender(serverBundle, template));
+          return response.send(serverSideRender(serverBundle, template, req));
         })
         .catch(next);
     });
 
     return new Promise((resolve, reject) => {
-      this.ssrCompiler?.hooks.done.tap("ssr", (stats) => {
+      this.ssrCompiler?.hooks.done.tap("done", (stats) => {
         if (stats.hasErrors()) {
           stats.toJson().errors.forEach((err) => {
             log(err);
@@ -223,7 +227,33 @@ class Serve {
     });
   }
 
-  run() {
+  private async produce() {
+    info("produce files ...");
+
+    const templatePath = path.join(ROOT_PATH, "template");
+
+    const targetPath = `${SRC_PATH}/.luban`;
+
+    if (fs.existsSync(targetPath)) {
+      fs.removeSync(targetPath);
+    }
+
+    const files = await render(templatePath);
+
+    Object.keys(files).forEach((name) => {
+      const filePath = path.join(targetPath, name);
+      fs.ensureDirSync(path.dirname(filePath));
+      fs.writeFileSync(filePath, files[name]);
+    });
+  }
+
+  public async start() {
+    await this.produce();
+
+    await delay(1000);
+
+    console.log();
+
     return Promise.all([this.startCSRServer(), this.startSSRServer()]).then(() => {
       open(this.CSRUrlList?.localUrlForBrowser || "").catch(() => undefined);
       open(this.SSRUrlList?.localUrlForBrowser || "").catch(() => undefined);
@@ -239,4 +269,4 @@ class Serve {
   }
 }
 
-new Serve().run();
+new Serve().start();

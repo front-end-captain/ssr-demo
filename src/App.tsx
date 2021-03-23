@@ -1,7 +1,7 @@
 import { hot } from "react-hot-loader/root";
 import React from "react";
 
-import "./app.css";
+import "./App.css";
 
 function App() {
   return <div className="app-wrapper">hello, server side render</div>;

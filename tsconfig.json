@@ -15,15 +15,8 @@
     "removeComments": true,
     "suppressImplicitAnyIndexErrors": true,
     "downlevelIteration": true,
-    "lib": [
-      "ES2017",
-      "ES2016",
-      "ES2015",
-      "ES5",
-    ],
-    "types": [
-      "node"
-    ],
+    "lib": ["ES2017", "ES2016", "ES2015", "ES5"],
+    "types": ["node"],
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -34,10 +27,7 @@
     "alwaysStrict": false,
     "baseUrl": "./",
     "resolveJsonModule": true,
-    "esModuleInterop": true,
+    "esModuleInterop": true
   },
-  "exclude": [
-    "src",
-    "lib",
-  ]
+  "exclude": ["src", "lib", "template"]
 }

@@ -8,7 +8,7 @@ import { SRC_PATH, BUILD_PATH, ASSETS_PATH } from "../path";
 export function setServerConfig(
   mode: webpack.Configuration["mode"]
 ): webpack.Configuration {
-  const entry = path.join(SRC_PATH, "server.entry.js");
+  const entry = path.join(SRC_PATH, ".luban/server.entry.tsx");
 
   return {
     mode: mode || "development",
@@ -29,12 +29,12 @@ export function setServerConfig(
     module: {
       rules: [
         {
-          test: /\.js[x]?$/,
+          test: /\.ts[x]?$/,
           loader: require.resolve("babel-loader"),
           exclude: /node_modules/,
           options: {
             cacheDirectory: true,
-            presets: ["@babel/preset-env", "@babel/preset-react"],
+            presets: ["@babel/preset-env", "@babel/preset-react", "@babel/preset-typescript"],
             plugins: mode === "development" ? ["react-hot-loader/babel"] : [],
           },
         },
@@ -45,7 +45,7 @@ export function setServerConfig(
       ],
     },
     resolve: {
-      extensions: [".js", ".json", ".jsx"],
+      extensions: [".js", ".json", ".jsx", ".ts", ".tsx"],
     },
     node: {
       __dirname: true,

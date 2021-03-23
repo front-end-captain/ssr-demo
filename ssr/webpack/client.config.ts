@@ -9,7 +9,7 @@ import { SRC_PATH, BUILD_PATH, TEMPLATE_PATH, ASSETS_PATH } from "../path";
 export function setClientConfig(
   mode: webpack.Configuration["mode"]
 ): webpack.Configuration {
-  const entry = path.join(SRC_PATH, "client.entry.js");
+  const entry = path.join(SRC_PATH, ".luban/client.entry.tsx");
   return {
     mode: mode || "development",
     devtool:
@@ -25,12 +25,12 @@ export function setClientConfig(
     module: {
       rules: [
         {
-          test: /\.js[x]?$/,
+          test: /\.ts[x]?$/,
           loader: require.resolve("babel-loader"),
           exclude: /node_modules/,
           options: {
             cacheDirectory: true,
-            presets: ["@babel/preset-env", "@babel/preset-react"],
+            presets: ["@babel/preset-env", "@babel/preset-react", "@babel/preset-typescript"],
             plugins: mode === "development" ? ["react-hot-loader/babel"] : [],
           },
         },
@@ -69,7 +69,7 @@ export function setClientConfig(
       ],
     },
     resolve: {
-      extensions: [".js", ".json", ".jsx"],
+      extensions: [".js", ".json", ".jsx", ".ts", ".tsx"],
     },
     plugins: [
       new HtmlWebpackPlugin({

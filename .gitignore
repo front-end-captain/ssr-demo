@@ -8,6 +8,7 @@ logs
 # Runtime data
 build
 dist
+.luban
 
 
 # Dependency directories
