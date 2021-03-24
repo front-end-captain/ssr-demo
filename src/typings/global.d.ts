@@ -7,9 +7,4 @@ interface NodeModule {
 interface Hot {
   accept(path?: string): void;
 }
-declare const __IS_BROWSER__: boolean;
-
-type Component<P = {}> = React.FunctionComponent<P> & {
-  // TODO typeof "params" ???
-  getInitialProps?: <T>(params: unknown) => Promise<T>;
-};
+declare const __IS_BROWSER__: boolean | undefined;

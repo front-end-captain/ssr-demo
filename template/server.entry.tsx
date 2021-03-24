@@ -6,6 +6,8 @@ console.log("__IS_BROWSER__", __IS_BROWSER__);
 
 import entry from "../";
 
+const Root = entry.provider;
+
 function serverRender(path: string) {
   const activityRoute = entry.routes.routes.find((routeItem) => {
     return pathToRegexp(routeItem.path, [], { strict: true }).test(path);
@@ -23,7 +25,9 @@ function serverRender(path: string) {
 
   return (
     <StaticRouter location={path}>
-      <ActivityComponent />
+      <Root>
+        <ActivityComponent />
+      </Root>
     </StaticRouter>
   );
 }

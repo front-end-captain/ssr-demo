@@ -14,8 +14,8 @@ export function setClientConfig(
     mode: mode || "development",
     devtool:
       mode === "development"
-        ? "@cheap-module-eval-source-map"
-        : "@cheap-source-map",
+        ? "cheap-module-eval-source-map"
+        : "cheap-source-map",
     entry: mode === "development" ? ["react-hot-loader/patch", entry] : [entry],
     output: {
       path: BUILD_PATH,

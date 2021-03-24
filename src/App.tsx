@@ -1,10 +1,15 @@
-import { hot } from "react-hot-loader/root";
-import React from "react";
+import React, { FunctionComponent } from "react";
+import { Link } from "react-router-dom";
 
 import "./App.css";
 
-function App() {
-  return <div className="app-wrapper">hello, server side render</div>;
-}
+const App: FunctionComponent = (props) => {
+  return (
+    <div className="app-wrapper">
+      <Link to="/home">首页</Link> <Link to="/about">关于</Link>
+      <div>{props.children}</div>
+    </div>
+  );
+};
 
-export default hot(App);
+export { App };
