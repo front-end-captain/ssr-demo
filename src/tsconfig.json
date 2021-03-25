@@ -6,7 +6,6 @@
     "target": "ES6",
     "module": "ESNext",
     "removeComments": true,
-    "rootDir": "./",
     "sourceMap": true,
 
     /* Strict Checks */
@@ -35,7 +34,8 @@
     "resolveJsonModule": true,
     "skipDefaultLibCheck": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
-  },
-  "exclude": [".luban"]
+    "forceConsistentCasingInFileNames": true,
+
+    "types": ["node"],
+  }
 }

@@ -27,7 +27,7 @@
     "baseUrl": "./",
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "rootDir": "./"
+    "rootDir": "./",
   },
   "exclude": [".luban_cache", "dist"]
 }

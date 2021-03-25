@@ -15,7 +15,7 @@ function App() {
       return item.component ? GetInitialProps(item.component) : <Redirect to={{ pathname: item.redirect }} />;
     };
 
-    return <Route path={item.path} key={item.path} render={render} />;
+    return <Route path={item.path} key={item.path} render={render} extra />;
   });
 
   return (

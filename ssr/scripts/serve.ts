@@ -248,7 +248,7 @@ class Serve {
   }
 
   public async start() {
-    await this.produce();
+    // await this.produce();
 
     await delay(1000);
 

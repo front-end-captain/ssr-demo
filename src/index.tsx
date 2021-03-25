@@ -10,13 +10,17 @@ import { ComponentType } from "./typings/react"
 interface Config {
   root?: string;
   provider?: ({ children }: { children: ReactNode }) => JSX.Element;
-  routes?: Array<{ path: string, component: ComponentType }>;
+  routes?: Array<{ path: string, component?: ComponentType, redirect?: string }>;
 }
 
 export default {
   root: "root",
   provider: (props) => <App {...props} />,
   routes: [
+    {
+      path: "/",
+      redirect: "/home",
+    },
     {
       path: "/home",
       component: Home,

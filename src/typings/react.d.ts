@@ -1,4 +1,3 @@
-
 interface ClassComponent<P, INIT_PROPS = {}> extends React.ComponentClass<P> {
   getInitialProps?(): INIT_PROPS | Promise<INIT_PROPS>;
 }
@@ -100,6 +99,13 @@ declare module "react" {
       // on the existence of `children` in `OWN_PROPS`, then we should remove this.
       readonly props: Readonly<FINAL> & Readonly<{ children?: ReactNode }>;
       state: Readonly<STATE>;
+      /**
+       * @deprecated
+       * https://reactjs.org/docs/refs-and-the-dom.html#legacy-api-string-refs
+       */
+      refs: {
+        [key: string]: ReactInstance;
+      };
     }
   }
 }
