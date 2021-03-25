@@ -1,16 +1,28 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { LubanRouter } from "luban-router";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+
+import { GetInitialProps } from "./getInitialProps";
 
 import entry from "../";
-
-console.log("__IS_BROWSER__", __IS_BROWSER__);
 
 const Root = entry.provider;
 const root = document.getElementById(entry.root);
 
 function App() {
-  return <LubanRouter config={entry.routes} >{(props) => <Root>{props.renderedTable}</Root>}</LubanRouter>;
+  const router = entry.routes.map((item) => {
+    const Component = GetInitialProps(item.component);
+
+    return <Route path={item.path} key={item.path} render={() => <Component />} />;
+  });
+
+  return (
+    <BrowserRouter>
+      <Root>
+        <Switch>{router}</Switch>
+      </Root>
+    </BrowserRouter>
+  );
 }
 
 function clientRender() {

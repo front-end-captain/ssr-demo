@@ -1,47 +1,20 @@
-/// <reference types="node" />
-import { ServerResponse, IncomingMessage } from "http";
-import { ComponentType } from "react";
-import { ParsedUrlQuery } from "querystring";
+interface ClassComponent<P, INIT_PROPS = {}> extends React.ComponentClass<P> {
+  getInitialProps?(): INIT_PROPS | Promise<INIT_PROPS>;
+}
+interface FunctionComponent<P, INIT_PROPS = {}> extends React.FunctionComponent<P> {
+  getInitialProps?(): INIT_PROPS | Promise<INIT_PROPS>;
+}
+
+export type ComponentType<P = {}> = ClassComponent<P> | FunctionComponent<P>;
 
 /**
  * `Next` context
  */
 export interface LubanPageContext {
-  /**
-   * Error object if encountered during rendering
-   */
-  err?:
-    | (Error & {
-        statusCode?: number;
-      })
-    | null;
-  /**
-   * `HTTP` request object.
-   */
-  req?: IncomingMessage;
-  /**
-   * `HTTP` response object.
-   */
-  res?: ServerResponse;
-  /**
-   * Path section of `URL`.
-   */
-  pathname: string;
-  /**
-   * Query string section of `URL` parsed as an object.
-   */
-  query: ParsedUrlQuery;
-  /**
-   * `String` of the actual path including query.
-   */
-  asPath?: string;
-
   [k: string]: unknown;
 }
 
-export declare type LubanComponentType<OWN_PROPS = {}, INIT_PROPS = {}> = ComponentType<
-  OWN_PROPS & INIT_PROPS
-> & {
+export declare type LubanComponentType<OWN_PROPS = {}, INIT_PROPS = {}> = ComponentType<OWN_PROPS & INIT_PROPS> & {
   /**
    * Used for initial page load data population. Data returned from `getInitialProps` is serialized when server rendered.
    * Make sure to return plain `Object` without using `Date`, `Map`, `Set`.
@@ -60,13 +33,8 @@ declare module "react" {
   export as namespace React;
   declare namespace React {
     // Base component for plain JS classes
-    interface Component<
-      OWN_PROPS = {},
-      INIT_PROPS = {},
-      STATE = {},
-      SNAPSHOT = {},
-      FINAL = OWN_PROPS & INIT_PROPS
-    > extends ComponentLifecycle<FINAL, STATE, SNAPSHOT> {}
+    interface Component<OWN_PROPS = {}, INIT_PROPS = {}, STATE = {}, SNAPSHOT = {}, FINAL = OWN_PROPS & INIT_PROPS>
+      extends ComponentLifecycle<FINAL, STATE, SNAPSHOT> {}
     class Component<OWN_PROPS, INIT_PROPS, STATE, FINAL = OWN_PROPS & INIT_PROPS> {
       /**
        * If set, `this.context` will be set at runtime to the current value of the given Context.

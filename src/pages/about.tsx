@@ -1,26 +1,26 @@
-/* eslint-disable no-console */
 import React from "react";
-import { EnhancedRouteComponentProps } from "luban-router/es/definitions";
+import { RouteComponentProps } from "react-router-dom";
 
 interface AboutInitProps {
-  age: number;
+  my_name: string;
 }
 
-class About extends React.Component<EnhancedRouteComponentProps<{ name: string }>, AboutInitProps> {
-  static getInitialProps(): AboutInitProps {
-    return { age: 1 };
+class About extends React.Component<RouteComponentProps<{ name: string }>, AboutInitProps> {
+  static getInitialProps(): Promise<AboutInitProps> {
+    return new Promise<AboutInitProps>((resolve) => {
+      setTimeout(() => {
+        resolve({ my_name: "brendan" });
+      }, 1000);
+    });
   }
 
-  constructor(props: EnhancedRouteComponentProps<{ name: string }> & AboutInitProps) {
+  constructor(props: RouteComponentProps<{ name: string }> & AboutInitProps) {
     super(props);
-
-    console.log(props.age);
   }
 
   render(): JSX.Element {
-    console.log(this.props.age);
-    return <h4>About page</h4>;
+    return <h3>About page, {this.props.my_name}</h3>;
   }
 }
 
-export default About ;
+export default About;

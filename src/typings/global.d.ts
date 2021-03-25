@@ -1,5 +1,6 @@
 interface Window {
-  __USE_SSR__?: string;
+  __USE_SSR__?: boolean;
+  __INITIAL_DATA__?: any;
 }
 interface NodeModule {
   hot?: Hot;

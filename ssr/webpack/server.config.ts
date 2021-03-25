@@ -5,9 +5,7 @@ import nodeExternals from "webpack-node-externals";
 
 import { SRC_PATH, BUILD_PATH, ASSETS_PATH } from "../path";
 
-export function setServerConfig(
-  mode: webpack.Configuration["mode"]
-): webpack.Configuration {
+export function setServerConfig(mode: webpack.Configuration["mode"]): webpack.Configuration {
   const entry = path.join(SRC_PATH, ".luban/server.entry.tsx");
 
   return {
@@ -35,7 +33,10 @@ export function setServerConfig(
           options: {
             cacheDirectory: true,
             presets: ["@babel/preset-env", "@babel/preset-react", "@babel/preset-typescript"],
-            plugins: mode === "development" ? ["react-hot-loader/babel"] : [],
+            plugins:
+              mode === "development"
+                ? ["react-hot-loader/babel", "@babel/plugin-transform-runtime"]
+                : ["@babel/plugin-transform-runtime"],
           },
         },
         {

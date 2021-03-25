@@ -15,6 +15,8 @@ import { log, info } from "@luban-cli/cli-shared-utils";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import BodyParser from "body-parser";
 import fs from "fs-extra";
+import ReactDOMServer from "react-dom/server";
+import ejs from "ejs";
 
 import { prepareUrls, UrlList } from "./prepareURLs";
 import { getModuleFromString, getTemplate, render, delay } from "./util";
@@ -22,9 +24,11 @@ import { getModuleFromString, getTemplate, render, delay } from "./util";
 import { setClientConfig } from "../webpack/client.config";
 import { setServerConfig } from "../webpack/server.config";
 import { ASSETS_PATH } from "../path";
-import { serverSideRender } from "./serverSideRender";
 
 import { SRC_PATH, ROOT_PATH } from "../path";
+
+export type Context = { path: string; initProps: {} };
+export type ServerEntry = (req: Context) => null | Promise<JSX.Element>;
 
 const defaultCSRServerConfig = {
   host: "0.0.0.0",
@@ -84,13 +88,6 @@ class Serve {
       overlay: { warnings: false, errors: true },
       open: false,
       stats: false,
-      // stats: {
-      //   version: true,
-      //   timings: true,
-      //   colors: true,
-      //   modules: false,
-      //   children: false,
-      // },
     };
 
     this.csrServer = new WebpackDevServer(this.csrCompiler, webpackDevServerOptions);
@@ -135,7 +132,7 @@ class Serve {
 
     this.ssrCompiler.outputFileSystem = mfs;
 
-    let serverBundle = {};
+    let serverBundle: { default: ServerEntry } = { default: () => null };
 
     this.ssrCompiler.watch({}, (error, stats) => {
       if (error) {
@@ -160,19 +157,6 @@ class Serve {
       serverBundle = m.exports;
     });
 
-    // server.use((request, _, next) => {
-    //   console.log();
-    //   console.log(
-    //     "The request type is " +
-    //       chalk.green(request.method) +
-    //       "; request url is " +
-    //       chalk.green(request.originalUrl) +
-    //       "; " +
-    //       chalk.yellow(new Date().toUTCString()),
-    //   );
-    //   next();
-    // });
-
     server.use(BodyParser.json());
     server.use(BodyParser.urlencoded({ extended: false }));
 
@@ -184,18 +168,34 @@ class Serve {
 
     server.use(ASSETS_PATH, assetsProxy);
 
-    server.get("*", (req, response, next) => {
+    server.get("*", async (req, response, next) => {
       if (!serverBundle) {
         return response.send("waiting for serverBundle...");
       }
 
-      const templateUrl = this.CSRUrlList?.localUrlForBrowser + ASSETS_PATH + "server.ejs";
+      try {
+        const templateUrl = this.CSRUrlList?.localUrlForBrowser + ASSETS_PATH + "server.ejs";
 
-      getTemplate(templateUrl.replace(/(\d+)[(^/)](\/)+/, "$1$2"))
-        .then((template) => {
-          return response.send(serverSideRender(serverBundle, template, req));
-        })
-        .catch(next);
+        const template = await getTemplate(templateUrl.replace(/(\d+)[(^/)](\/)+/, "$1$2"));
+
+        const context = { path: req.path, initProps: {} };
+        const reactApp = await serverBundle.default(context);
+
+        let html = "";
+        if (reactApp) {
+          const content = ReactDOMServer.renderToString(reactApp);
+
+          html = ejs.render(template, {
+            CONTENT: content,
+            __INITIAL_DATA__: JSON.stringify(context.initProps),
+            __USE_SSR__: true,
+          });
+        }
+
+        response.send(html);
+      } catch (err) {
+        next(err);
+      }
     });
 
     return new Promise((resolve, reject) => {

@@ -6,16 +6,11 @@ import WebpackBar from "webpackbar";
 
 import { SRC_PATH, BUILD_PATH, TEMPLATE_PATH, ASSETS_PATH } from "../path";
 
-export function setClientConfig(
-  mode: webpack.Configuration["mode"]
-): webpack.Configuration {
+export function setClientConfig(mode: webpack.Configuration["mode"]): webpack.Configuration {
   const entry = path.join(SRC_PATH, ".luban/client.entry.tsx");
   return {
     mode: mode || "development",
-    devtool:
-      mode === "development"
-        ? "cheap-module-eval-source-map"
-        : "cheap-source-map",
+    devtool: mode === "development" ? "cheap-module-eval-source-map" : "cheap-source-map",
     entry: mode === "development" ? ["react-hot-loader/patch", entry] : [entry],
     output: {
       path: BUILD_PATH,
@@ -31,7 +26,10 @@ export function setClientConfig(
           options: {
             cacheDirectory: true,
             presets: ["@babel/preset-env", "@babel/preset-react", "@babel/preset-typescript"],
-            plugins: mode === "development" ? ["react-hot-loader/babel"] : [],
+            plugins:
+              mode === "development"
+                ? ["react-hot-loader/babel", "@babel/plugin-transform-runtime"]
+                : ["@babel/plugin-transform-runtime"],
           },
         },
         {

@@ -22,7 +22,7 @@ export const getTemplate = (url: string): Promise<string> => {
 };
 
 export const getModuleFromString = (bundle: string, filename: string) => {
-  const m = { exports: {} };
+  const m = { exports: { default: () => null } };
 
   const wrapper = NativeModule.wrap(bundle);
 

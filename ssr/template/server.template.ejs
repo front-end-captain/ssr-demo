@@ -10,6 +10,10 @@
 
 <body>
   <div id="root"><%%- CONTENT %%></div>
+  <script>
+    window.__USE_SSR__=<%%- __USE_SSR__ %%>
+    window.__INITIAL_DATA__=<%%- __INITIAL_DATA__ %%>
+  </script>
 </body>
 
 </html>
