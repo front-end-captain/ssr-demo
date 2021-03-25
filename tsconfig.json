@@ -1,4 +1,8 @@
 {
+  // More tsconfig info see https://www.typescriptlang.org/docs/handbook/tsconfig-json.html
+  "include": ["src/**/*", "src/.luban/*", "src/typings/*"],
+  "exclude": ["public", "dist", "build"],
+
   "compilerOptions": {
     /* Project Options */
     "declaration": false,
@@ -6,6 +10,7 @@
     "target": "ES6",
     "module": "ESNext",
     "removeComments": true,
+    "rootDir": "./",
     "sourceMap": true,
 
     /* Strict Checks */
@@ -34,8 +39,6 @@
     "resolveJsonModule": true,
     "skipDefaultLibCheck": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-
-    "types": ["node"],
+    "forceConsistentCasingInFileNames": true
   }
 }

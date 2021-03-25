@@ -1,6 +1,6 @@
 import React from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { LubanPage } from "typings/react";
+import { LubanPage } from "luban-ssr";
 
 interface HomeInitProps {
   age: number;

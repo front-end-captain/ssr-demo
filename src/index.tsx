@@ -5,7 +5,7 @@ import { App } from "./App";
 import Home from "./pages/home";
 import About from "./pages/about";
 
-import { ComponentType } from "./typings/react"
+import { ComponentType } from "luban-ssr";
 
 interface Config {
   root?: string;

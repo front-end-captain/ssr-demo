@@ -1,40 +1,17 @@
-interface ClassComponent<P, INIT_PROPS = {}> extends React.ComponentClass<P> {
-  getInitialProps?(): INIT_PROPS | Promise<INIT_PROPS>;
-}
-interface FunctionComponent<P, INIT_PROPS = {}> extends React.FunctionComponent<P> {
-  getInitialProps?(): INIT_PROPS | Promise<INIT_PROPS>;
-}
-
-export type ComponentType<P = {}> = ClassComponent<P> | FunctionComponent<P>;
-
-/**
- * `Next` context
- */
-export interface LubanPageContext {
-  [k: string]: unknown;
-}
-
-export declare type LubanComponentType<OWN_PROPS = {}, INIT_PROPS = {}> = ComponentType<OWN_PROPS & INIT_PROPS> & {
-  /**
-   * Used for initial page load data population. Data returned from `getInitialProps` is serialized when server rendered.
-   * Make sure to return plain `Object` without using `Date`, `Map`, `Set`.
-   * @param ctx Context of `page`
-   */
-  getInitialProps?(context: LubanPageContext): INIT_PROPS | Promise<INIT_PROPS>;
-};
-
-/**
- * `Page` type, use it as a guide to create `pages`.
- */
-export declare type LubanPage<OWN_PROPS = {}, INIT_PROPS = {}> = LubanComponentType<OWN_PROPS, INIT_PROPS>;
+import React from "react";
 
 declare module "react" {
   export = React;
   export as namespace React;
   declare namespace React {
     // Base component for plain JS classes
-    interface Component<OWN_PROPS = {}, INIT_PROPS = {}, STATE = {}, SNAPSHOT = {}, FINAL = OWN_PROPS & INIT_PROPS>
-      extends ComponentLifecycle<FINAL, STATE, SNAPSHOT> {}
+    interface Component<
+      OWN_PROPS = {},
+      INIT_PROPS = {},
+      STATE = {},
+      SNAPSHOT = {},
+      FINAL = OWN_PROPS & INIT_PROPS
+    > extends ComponentLifecycle<FINAL, STATE, SNAPSHOT> {}
     class Component<OWN_PROPS, INIT_PROPS, STATE, FINAL = OWN_PROPS & INIT_PROPS> {
       /**
        * If set, `this.context` will be set at runtime to the current value of the given Context.
@@ -99,11 +76,12 @@ declare module "react" {
       // on the existence of `children` in `OWN_PROPS`, then we should remove this.
       readonly props: Readonly<FINAL> & Readonly<{ children?: ReactNode }>;
       state: Readonly<STATE>;
+
       /**
        * @deprecated
        * https://reactjs.org/docs/refs-and-the-dom.html#legacy-api-string-refs
        */
-      refs: {
+       refs: {
         [key: string]: ReactInstance;
       };
     }
