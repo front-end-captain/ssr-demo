@@ -8,4 +8,5 @@ interface NodeModule {
 interface Hot {
   accept(path?: string): void;
 }
+
 declare const __IS_BROWSER__: boolean | undefined;

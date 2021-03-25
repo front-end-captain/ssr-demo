@@ -1,3 +1,4 @@
+
 interface ClassComponent<P, INIT_PROPS = {}> extends React.ComponentClass<P> {
   getInitialProps?(): INIT_PROPS | Promise<INIT_PROPS>;
 }
@@ -26,7 +27,7 @@ export declare type LubanComponentType<OWN_PROPS = {}, INIT_PROPS = {}> = Compon
 /**
  * `Page` type, use it as a guide to create `pages`.
  */
-export type LubanPage<OWN_PROPS = {}, INIT_PROPS = {}> = LubanComponentType<OWN_PROPS, INIT_PROPS>;
+export declare type LubanPage<OWN_PROPS = {}, INIT_PROPS = {}> = LubanComponentType<OWN_PROPS, INIT_PROPS>;
 
 declare module "react" {
   export = React;

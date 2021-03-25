@@ -1,5 +1,4 @@
 {
-  "include": ["ssr"],
   "compilerOptions": {
     "target": "ES6",
     "module": "CommonJS",
@@ -27,7 +26,8 @@
     "alwaysStrict": false,
     "baseUrl": "./",
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "rootDir": "./"
   },
-  "exclude": ["src", "lib", "template"]
+  "exclude": [".luban_cache", "dist"]
 }

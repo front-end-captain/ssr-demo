@@ -230,7 +230,7 @@ class Serve {
   private async produce() {
     info("produce files ...");
 
-    const templatePath = path.join(ROOT_PATH, "template");
+    const templatePath = path.join(ROOT_PATH, "ssr/.luban_cache");
 
     const targetPath = `${SRC_PATH}/.luban`;
 
