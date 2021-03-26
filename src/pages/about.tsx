@@ -5,7 +5,15 @@ interface AboutInitProps {
   my_name: string;
 }
 
-class About extends React.Component<RouteComponentProps<{ name: string }>, AboutInitProps> {
+interface AboutInitState {
+  count: number;
+}
+
+class About extends React.Component<
+  RouteComponentProps<{ name: string }>,
+  AboutInitState,
+  AboutInitProps
+> {
   static getInitialProps(): Promise<AboutInitProps> {
     return new Promise<AboutInitProps>((resolve) => {
       setTimeout(() => {
@@ -16,10 +24,25 @@ class About extends React.Component<RouteComponentProps<{ name: string }>, About
 
   constructor(props: RouteComponentProps<{ name: string }> & AboutInitProps) {
     super(props);
+
+    this.state = {
+      count: 1,
+    };
   }
 
+  handleCount = () => {
+    this.setState({ count: this.state.count + 1 });
+  };
+
   render(): JSX.Element {
-    return <h3>About page, {this.props.my_name}</h3>;
+    const { count } = this.state;
+    return (
+      <div>
+        <h3>About page, {this.props.my_name}</h3>
+        <h4>{count}</h4>
+        <button onClick={this.handleCount}>click me</button>
+      </div>
+    );
   }
 }
 

@@ -5,14 +5,9 @@ declare module "react" {
   export as namespace React;
   declare namespace React {
     // Base component for plain JS classes
-    interface Component<
-      OWN_PROPS = {},
-      INIT_PROPS = {},
-      STATE = {},
-      SNAPSHOT = {},
-      FINAL = OWN_PROPS & INIT_PROPS
-    > extends ComponentLifecycle<FINAL, STATE, SNAPSHOT> {}
-    class Component<OWN_PROPS, INIT_PROPS, STATE, FINAL = OWN_PROPS & INIT_PROPS> {
+    interface Component<OWN_PROPS = {}, STATE = {}, INIT_PROPS = {}, SNAPSHOT = {}, FINAL = OWN_PROPS & INIT_PROPS>
+      extends ComponentLifecycle<FINAL, STATE, SNAPSHOT> {}
+    class Component<OWN_PROPS, STATE, INIT_PROPS, FINAL = OWN_PROPS & INIT_PROPS> {
       /**
        * If set, `this.context` will be set at runtime to the current value of the given Context.
        *
@@ -81,7 +76,7 @@ declare module "react" {
        * @deprecated
        * https://reactjs.org/docs/refs-and-the-dom.html#legacy-api-string-refs
        */
-       refs: {
+      refs: {
         [key: string]: ReactInstance;
       };
     }

@@ -1,16 +1,16 @@
 import React, { ReactNode } from "react";
+import { ComponentType } from "luban-ssr";
 
 import { App } from "./App";
 
 import Home from "./pages/home";
 import About from "./pages/about";
-
-import { ComponentType } from "luban-ssr";
+import Index from "./pages/index";
 
 interface Config {
   root?: string;
   provider?: ({ children }: { children: ReactNode }) => JSX.Element;
-  routes?: Array<{ path: string, component?: ComponentType, redirect?: string }>;
+  routes?: Array<{ path: string, component: ComponentType }>;
 }
 
 export default {
@@ -19,7 +19,7 @@ export default {
   routes: [
     {
       path: "/",
-      redirect: "/home",
+      component: Index,
     },
     {
       path: "/home",

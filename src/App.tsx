@@ -6,7 +6,11 @@ import "./App.css";
 const App: FunctionComponent = (props) => {
   return (
     <div className="app-wrapper">
-      <Link to="/home">首页</Link> <Link to="/about">关于</Link>
+      <Link to="/">Index</Link>
+      &nbsp;&nbsp;&nbsp;
+      <Link to="/home">Home</Link>
+      &nbsp;&nbsp;&nbsp;
+      <Link to="/about">About</Link>
       <div>{props.children}</div>
     </div>
   );
