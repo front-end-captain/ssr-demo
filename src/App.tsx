@@ -1,16 +1,22 @@
 import React, { FunctionComponent } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 import "./App.css";
 
 const App: FunctionComponent = (props) => {
   return (
     <div className="app-wrapper">
-      <Link to="/">Index</Link>
+      <NavLink to="/" activeClassName="activity" exact>
+        Index
+      </NavLink>
       &nbsp;&nbsp;&nbsp;
-      <Link to="/home">Home</Link>
+      <NavLink to="/home" activeClassName="activity" exact>
+        Home
+      </NavLink>
       &nbsp;&nbsp;&nbsp;
-      <Link to="/about">About</Link>
+      <NavLink to="/about" activeClassName="activity" exact>
+        About
+      </NavLink>
       <div>{props.children}</div>
     </div>
   );

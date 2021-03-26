@@ -2,3 +2,11 @@
   color: red;
   font-size: 20px;
 }
+
+.app-wrapper a {
+  color: blue;
+}
+
+.app-wrapper .activity {
+  color: #ffc107;
+}
