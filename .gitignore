@@ -9,6 +9,7 @@ logs
 build
 dist
 src/.luban
+.DS_Store
 
 
 # Dependency directories

@@ -6,7 +6,7 @@ import "./App.css";
 const App: FunctionComponent = (props) => {
   return (
     <div className="app-wrapper">
-      <NavLink to="/" activeClassName="activity" exact>
+      <NavLink to="/index" activeClassName="activity" exact>
         Index
       </NavLink>
       &nbsp;&nbsp;&nbsp;
