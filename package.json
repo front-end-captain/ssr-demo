@@ -33,7 +33,7 @@
     "@types/react-dom": "^16.9.12",
     "@types/react-helmet": "^6.1.0",
     "@types/react-router-dom": "^5.1.7",
-    "luban-ssr": "^0.0.2-12",
+    "luban-ssr": "^0.0.2-14",
     "typescript": "3.8.3"
   }
 }
