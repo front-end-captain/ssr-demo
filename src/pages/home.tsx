@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { LubanPage } from "luban-ssr";
 
@@ -7,7 +7,14 @@ interface HomeInitProps {
 }
 
 const Home: LubanPage<RouteComponentProps<{ name: string }>, HomeInitProps> = ({ age }) => {
-  return <h3>Home page, {age}</h3>;
+  const [count, setCount] = useState(1);
+
+  return (
+    <div>
+      Home page, {age}
+      <h4>{count}</h4> <button onClick={() => setCount(count + 1)}>count</button>
+    </div>
+  );
 };
 
 Home.getInitialProps = () => {

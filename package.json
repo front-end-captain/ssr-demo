@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "compile": "tsc --noEmit",
-    "serve": "ssr --skip-produce",
-    "serve:rewrite": "ssr"
+    "serve": "ssr serve --skip-produce",
+    "serve:rewrite": "ssr serve",
+    "build": "ssr build"
   },
   "repository": {
     "type": "git",
