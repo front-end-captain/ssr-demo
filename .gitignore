@@ -8,7 +8,6 @@ logs
 # Runtime data
 build
 dist
-src/.luban
 .DS_Store
 
 
