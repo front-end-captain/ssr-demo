@@ -1,6 +1,8 @@
 import React, { Component } from "react";
-import { ComponentType } from "luban-ssr";
+import { ComponentType } from "./index";
 import { DefaultRouteProps } from "./router/definitions";
+
+import { store } from "./client.entry";
 
 interface MountPropsComponentState {
   extraProps: Record<string, unknown>;
@@ -52,7 +54,7 @@ export function mountProps(
 
     async getInitialProps() {
       const extraProps = WrappedComponent.getInitialProps
-        ? await WrappedComponent.getInitialProps()
+        ? await WrappedComponent.getInitialProps({ path: this.props.location.pathname, store })
         : {};
 
       this.setState({
@@ -64,7 +66,8 @@ export function mountProps(
       const { extraProps } = this.state;
 
       const initData = routerChanged ? {} : window.__INITIAL_DATA__;
-      const finalProps = { ...this.props, ...initData, ...extraProps };
+      const initState = routerChanged ? {} : window.__INITIAL_STATE__;
+      const finalProps = { ...this.props, ...initData, ...extraProps, ...initState };
 
       return <WrappedComponent {...finalProps} />;
     }

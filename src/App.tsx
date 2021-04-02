@@ -11,7 +11,6 @@ const App: FunctionComponent = (props) => {
         <meta name="description" content="this is description" />
         <meta name="description" content="this is another description" />
       </Helmet>
-
       <NavLink to="/index" activeClassName="activity" exact>
         Index
       </NavLink>

@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { LubanPage } from "luban-ssr";
+import { Page } from "@/.luban";
 
 interface HomeInitProps {
   age: number;
 }
 
-const Home: LubanPage<RouteComponentProps<{ name: string }>, HomeInitProps> = ({ age }) => {
+const Home: Page<RouteComponentProps<{ name: string }>, HomeInitProps> = ({ age }) => {
   const [count, setCount] = useState(1);
 
   return (

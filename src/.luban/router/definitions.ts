@@ -8,16 +8,7 @@ import { RouteComponentProps } from "react-router-dom";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { StaticContext } from "react-router";
 
-export interface ClassComponent<OWN_PROPS, INIT_PROPS = {}>
-  extends React.ComponentClass<OWN_PROPS> {
-  getInitialProps?(): INIT_PROPS | Promise<INIT_PROPS>;
-}
-export interface FunctionComponent<OWN_PROPS, INIT_PROPS = {}>
-  extends React.FunctionComponent<OWN_PROPS> {
-  getInitialProps?(): INIT_PROPS | Promise<INIT_PROPS>;
-}
-
-export type ComponentType<P = {}> = ClassComponent<P> | FunctionComponent<P>;
+import { ComponentType } from "../index";
 
 export interface EnhancedRouteComponentProps<
   M extends Record<PropertyKey, unknown> = {},

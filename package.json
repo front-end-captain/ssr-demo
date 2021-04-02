@@ -7,7 +7,8 @@
     "compile": "tsc --noEmit",
     "serve": "ssr serve --skip-produce",
     "serve:rewrite": "ssr serve",
-    "build": "ssr build"
+    "build": "ssr build",
+    "postinstall": "ssr produce"
   },
   "repository": {
     "type": "git",
@@ -21,11 +22,12 @@
   },
   "homepage": "https://github.com/front-end-captain/ssr-demo#readme",
   "dependencies": {
+    "@rematch/core": "^2.0.1",
     "path-to-regexp": "^6.2.0",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-helmet": "^6.1.0",
-    "react-redux": "^7.2.2",
+    "react-redux": "^7.2.3",
     "react-router-dom": "^5.2.0"
   },
   "devDependencies": {
@@ -34,7 +36,7 @@
     "@types/react-dom": "^16.9.12",
     "@types/react-helmet": "^6.1.0",
     "@types/react-router-dom": "^5.1.7",
-    "luban-ssr": "^0.0.2-15",
+    "luban-ssr": "^0.0.2-18",
     "typescript": "3.8.3"
   }
 }

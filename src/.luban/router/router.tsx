@@ -130,7 +130,16 @@ const LubanRouter: FunctionComponent<LubanRouterProps> = ({
   customCheckAuthority,
   fallback = defaultFallback,
 }) => {
-  const { routes, mode = "browser", basename = "/", hashType = "slash" } = config;
+  const { routes, basename = "/", hashType = "slash" } = config;
+
+  let _mode = config.mode || "browser";
+
+  if (window.__USE_SSR__ && _mode === "hash") {
+    console.warn(
+      "You can not use server side render and hash mode same time. Corrective mode by 'browser'",
+    );
+    _mode = "browser";
+  }
 
   const flattenRouteList = useMemo(() => flattenRoutes(routes), [routes]);
 
@@ -148,7 +157,7 @@ const LubanRouter: FunctionComponent<LubanRouterProps> = ({
     fallback,
   };
 
-  return mode === "browser" ? (
+  return _mode === "browser" ? (
     <BrowserRouter basename={basename}>
       <RouterTable {...RouteTableProps} />
     </BrowserRouter>

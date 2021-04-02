@@ -35,6 +35,10 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
 
+    "paths": {
+      "@/*": ["src/*"],
+    },
+
     /* Advanced Options */
     "resolveJsonModule": true,
     "skipDefaultLibCheck": true,
