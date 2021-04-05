@@ -3,7 +3,8 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { init, RematchStore } from "@rematch/core";
 
-import { LubanRouter } from "./router/index";
+import { LubanRouter } from "./router";
+import { flattenRoutes } from "./util";
 
 import entry, { RootModel } from "../";
 
@@ -17,11 +18,13 @@ export const store: RematchStore<RootModel> = init({
   redux: { initialState: window.__INITIAL_STATE__ || {} },
 });
 
+const routes = flattenRoutes(entry.route.routes, entry.route.fallback);
+
 function App() {
   if (entry.models) {
     return (
       <Provider store={store}>
-        <LubanRouter config={entry.route}>
+        <LubanRouter config={{ ...entry.route, routes }}>
           {({ renderedTable }) => {
             return <Root>{renderedTable}</Root>;
           }}
@@ -31,7 +34,7 @@ function App() {
   }
 
   return (
-    <LubanRouter config={entry.route}>
+    <LubanRouter config={{ ...entry.route, routes }}>
       {({ renderedTable }) => {
         return <Root>{renderedTable}</Root>;
       }}
@@ -40,7 +43,8 @@ function App() {
 }
 
 function clientRender() {
-  ReactDOM[window.__USE_SSR__ ? "hydrate" : "render"](<App />, root);
+  ReactDOM["render"](<App />, root);
+  // ReactDOM[window.__USE_SSR__ ? "hydrate" : "render"](<App />, root);
 }
 
 clientRender();

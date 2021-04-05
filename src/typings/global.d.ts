@@ -5,3 +5,9 @@ interface Window {
 }
 
 declare const __IS_BROWSER__: boolean | undefined;
+
+interface NodeRequire extends NodeJS.Require {
+  resolveWebpack: (path: string) => any,
+}
+
+declare var require: NodeRequire;

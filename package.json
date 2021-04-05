@@ -7,7 +7,7 @@
     "compile": "tsc --noEmit",
     "serve": "ssr serve --skip-produce",
     "serve:rewrite": "ssr serve",
-    "build": "ssr build",
+    "build": "ssr build --skip-produce",
     "postinstall": "ssr produce"
   },
   "repository": {
@@ -27,6 +27,7 @@
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-helmet": "^6.1.0",
+    "react-loadable": "^5.5.0",
     "react-redux": "^7.2.3",
     "react-router-dom": "^5.2.0"
   },
@@ -35,8 +36,9 @@
     "@types/react": "^16.14.5",
     "@types/react-dom": "^16.9.12",
     "@types/react-helmet": "^6.1.0",
+    "@types/react-loadable": "^5.5.5",
     "@types/react-router-dom": "^5.1.7",
-    "luban-ssr": "^0.0.2-18",
+    "luban-ssr": "^0.0.2-20",
     "typescript": "3.8.3"
   }
 }

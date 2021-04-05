@@ -1,8 +1,23 @@
 import React, { FunctionComponent } from "react";
 import { NavLink } from "react-router-dom";
 import Helmet from "react-helmet";
+import Loadable, { LoadingComponentProps } from "react-loadable";
+
 
 import "./App.css";
+
+const fallback = (props: LoadingComponentProps) => {
+  console.log("fallback of Test", props);
+
+  return <span>loading Test</span>
+};
+
+const Test = Loadable({
+  loader: () => import("./pages/test"),
+  loading: fallback,
+});
+
+console.dir(Test);
 
 const App: FunctionComponent = (props) => {
   return (
@@ -23,6 +38,8 @@ const App: FunctionComponent = (props) => {
         About
       </NavLink>
       <div>{props.children}</div>
+
+      <Test />
     </div>
   );
 };

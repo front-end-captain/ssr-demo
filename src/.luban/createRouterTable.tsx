@@ -1,14 +1,14 @@
 import React, { ReactElement, isValidElement, createElement } from "react";
 import { Route, RouteComponentProps, Redirect, RedirectProps } from "react-router-dom";
 
-import { mountProps } from "../mountProps";
+// import { mountProps } from "../mountProps";
 
-import { NestedRouteItem, Role, CustomCheckAuthority, RouteComponent } from "./definitions";
+import { Role, CustomCheckAuthority, RouteComponent, BasicRouterItem } from "./definitions";
 
 import { checkAuthority } from "./util";
 
 function generateRedirectRouteProps(
-  route: NestedRouteItem,
+  route: BasicRouterItem,
   defaultUnAuthorityPath: string,
 ): RedirectProps & { key: string } {
   const { component: Component, redirect, path, exact, strict } = route;
@@ -31,7 +31,7 @@ function generateRedirectRouteProps(
 }
 
 function renderRouteComponent(
-  route: NestedRouteItem,
+  route: BasicRouterItem,
   props: RouteComponentProps,
   authorityChecker: CustomCheckAuthority,
   role?: Role,
@@ -45,8 +45,9 @@ function renderRouteComponent(
       return <Redirect {...generateRedirectRouteProps(route, defaultUnAuthorityPath)} />;
     }
 
-    const C = mountProps(Component);
-    return <C {...props} meta={meta} />;
+    // const C = mountProps(Component);
+    // return <C {...props} meta={meta} />;
+    return <Component {...props} meta={meta} />;
   }
 
   if (authorityChecker(role, authority)) {
@@ -54,8 +55,9 @@ function renderRouteComponent(
       return <Redirect {...generateRedirectRouteProps(route, defaultUnAuthorityPath)} />;
     }
 
-    const C = mountProps(Component);
-    return <C {...props} meta={meta} />;
+    // const C = mountProps(Component);
+    // return <C {...props} meta={meta} />;
+    return <Component {...props} meta={meta} />;
   }
 
   if (typeof unAuthorityPath === "string") {
@@ -78,14 +80,14 @@ type createRouterTableOptions = {
 };
 
 function createRouterTable(
-  routes: Array<NestedRouteItem>,
+  routes: Array<BasicRouterItem>,
   options: createRouterTableOptions,
 ): Array<ReactElement> {
   const { role, NotFound, customCheckAuthority } = options;
 
   const table: ReactElement[] = [];
 
-  const reversedRoutes: Array<NestedRouteItem> = Array.from(routes).reverse();
+  const reversedRoutes: Array<BasicRouterItem> = Array.from(routes).reverse();
 
   const authorityChecker =
     typeof customCheckAuthority === "function" ? customCheckAuthority : checkAuthority;

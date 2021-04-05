@@ -1,32 +1,20 @@
-import React, { FunctionComponent, useMemo, Suspense, ReactNode, CSSProperties } from "react";
+import React, { FunctionComponent } from "react";
 import { Switch, BrowserRouter, HashRouter, HashRouterProps, useLocation } from "react-router-dom";
 import { pathToRegexp } from "path-to-regexp";
 
-import { flattenRoutes, filterUnPermissionRoute } from "./util";
+import { filterUnPermissionRoute } from "./util";
 import { createRouterTable } from "./createRouterTable";
 import { DefaultNotFound } from "./defaultNotfound";
 
 import {
-  NestedRouteItem,
   LubanRouterProps,
   RouteComponent,
   BasicRouterItem,
   Role,
   MatchedRouterItem,
   CustomCheckAuthority,
+  NestedRouteItem,
 } from "./definitions";
-
-const suspenseFallbackStyle: CSSProperties = {
-  width: "100%",
-  height: "100%",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  fontSize: "0.4rem",
-  color: "#ccc",
-};
-
-const defaultFallback = <span style={suspenseFallbackStyle}>loading...</span>;
 
 function useMatchedRouteList(routeList: Array<BasicRouterItem>): Array<MatchedRouterItem> {
   const { pathname } = useLocation();
@@ -59,7 +47,7 @@ function useMatchedRouteList(routeList: Array<BasicRouterItem>): Array<MatchedRo
 }
 
 function findNotFoundComponent(
-  routes: Array<NestedRouteItem>,
+  routes: Array<BasicRouterItem>,
   defaultNotFound: RouteComponent,
 ): RouteComponent {
   const notFoundRouteItem = routes.find((route) => route.path.includes("404"));
@@ -77,21 +65,17 @@ function findNotFoundComponent(
 
 interface RouterTableProps {
   flattenRouteList: Array<BasicRouterItem>;
-  routeList: Array<NestedRouteItem>;
   notFoundComponent: RouteComponent;
-  fallback: NonNullable<ReactNode> | null;
   role?: Role;
   customRender?: LubanRouterProps["children"];
   customCheckAuthority?: CustomCheckAuthority;
 }
 const RouterTable: FunctionComponent<RouterTableProps> = ({
   flattenRouteList,
-  routeList,
   notFoundComponent,
   role,
   customRender,
   customCheckAuthority,
-  fallback,
 }) => {
   const routerTable = createRouterTable(flattenRouteList, {
     role,
@@ -101,15 +85,11 @@ const RouterTable: FunctionComponent<RouterTableProps> = ({
 
   const matchedRouteList = useMatchedRouteList(flattenRouteList);
 
-  let appRouter = (
-    <Suspense fallback={fallback}>
-      <Switch>{routerTable}</Switch>
-    </Suspense>
-  );
+  let appRouter = <Switch>{routerTable}</Switch>;
 
-  let permissionRouteList: Array<NestedRouteItem> = routeList;
+  let permissionRouteList: Array<NestedRouteItem> = flattenRouteList;
   if (role) {
-    permissionRouteList = filterUnPermissionRoute(routeList, role);
+    permissionRouteList = filterUnPermissionRoute(flattenRouteList, role);
   }
 
   if (typeof customRender === "function") {
@@ -128,7 +108,6 @@ const LubanRouter: FunctionComponent<LubanRouterProps> = ({
   role,
   children,
   customCheckAuthority,
-  fallback = defaultFallback,
 }) => {
   const { routes, basename = "/", hashType = "slash" } = config;
 
@@ -141,20 +120,16 @@ const LubanRouter: FunctionComponent<LubanRouterProps> = ({
     _mode = "browser";
   }
 
-  const flattenRouteList = useMemo(() => flattenRoutes(routes), [routes]);
-
   const notFoundComponent: RouteComponent = findNotFoundComponent(routes, DefaultNotFound);
 
   const hashRouterProps: HashRouterProps = { hashType, basename };
 
   const RouteTableProps: RouterTableProps = {
-    routeList: routes,
+    flattenRouteList: routes,
     customRender: children,
-    flattenRouteList,
     role,
     notFoundComponent,
     customCheckAuthority,
-    fallback,
   };
 
   return _mode === "browser" ? (

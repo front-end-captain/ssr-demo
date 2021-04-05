@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { RematchStore, InitConfig } from "@rematch/core";
 
-import { RouteConfig } from "./router/definitions";
+import { OriginRouteConfig } from "./definitions";
 import { RootModel } from "@/index";
 
 export interface Context {
@@ -14,7 +14,7 @@ export interface ClassComponent<OWN_PROPS, INIT_PROPS = {}>
   extends React.ComponentClass<OWN_PROPS & INIT_PROPS> {
   getInitialProps?(context: Context): INIT_PROPS | Promise<INIT_PROPS>;
 }
-export interface FunctionComponent<OWN_PROPS, INIT_PROPS = {}>
+export interface FunctionComponent<OWN_PROPS = {}, INIT_PROPS = {}>
   extends React.FunctionComponent<OWN_PROPS & INIT_PROPS> {
   getInitialProps?(context: Context): INIT_PROPS | Promise<INIT_PROPS>;
 }
@@ -26,7 +26,7 @@ export declare type Page<OWN_PROPS = {}, INIT_PROPS = {}> = ComponentType<OWN_PR
 interface Config {
   root?: string;
   provider?: ({ children }: { children: ReactNode }) => JSX.Element;
-  route: RouteConfig;
+  route: OriginRouteConfig;
   models?: InitConfig<RootModel>["models"];
 }
 

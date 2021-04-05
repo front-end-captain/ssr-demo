@@ -4,10 +4,6 @@ import { Models, RematchDispatch, RematchRootState } from "@rematch/core";
 
 import { App } from "./App";
 
-import Home from "./pages/home";
-import About from "./pages/about";
-import Index from "./pages/index";
-
 import { count } from "./models/count";
 
 export interface RootModel extends Models<RootModel> {
@@ -27,15 +23,15 @@ export default run({
       },
       {
         path: "/home",
-        component: Home,
+        component: "@/pages/home",
       },
       {
         path: "/about",
-        component: About,
+        component: "@/pages/about",
       },
       {
         path: "/index",
-        component: Index,
+        component: "@/pages/index",
       },
       {
         path: "/brendan",

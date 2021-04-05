@@ -18,7 +18,7 @@ class About extends React.Component<
   static getInitialProps(context: Context): Promise<AboutInitProps> {
     return new Promise<AboutInitProps>((resolve) => {
       setTimeout(() => {
-        resolve({ my_name: context.store.getState().count.name });
+        resolve({ my_name: context.store?.getState().count.name || "" });
       }, 1000);
     });
   }

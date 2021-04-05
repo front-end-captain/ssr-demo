@@ -3,12 +3,13 @@
 // Definitions by: front-end-captain <https://github.com/LeapFE>
 // TypeScript Version: 3.8.3
 
-import { ReactElement, ReactNode } from "react";
+import { ReactElement } from "react";
 import { RouteComponentProps } from "react-router-dom";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { StaticContext } from "react-router";
+import { LoadingComponentProps } from "react-loadable";
 
-import { ComponentType } from "../index";
+import { ComponentType } from "./index";
 
 export interface EnhancedRouteComponentProps<
   M extends Record<PropertyKey, unknown> = {},
@@ -71,6 +72,13 @@ export interface RouteConfig {
    * @type {Array}
    */
   routes: Array<NestedRouteItem>;
+
+  /** A fallback react tree to show when a Suspense child (like React.lazy) suspends */
+  fallback?: ComponentType<LoadingComponentProps>;
+}
+
+export interface OriginRouteConfig extends Omit<RouteConfig, "routes"> {
+  routes: Array<OriginNestedRouteItem>;
 }
 
 export interface BasicRouterItem {
@@ -150,6 +158,14 @@ export interface NestedRouteItem extends BasicRouterItem {
   children?: Array<NestedRouteItem>;
 }
 
+export interface OriginNestedRouteItem extends Omit<BasicRouterItem, "component"> {
+  component?: string;
+  /**
+   * @description this route's child route
+   */
+  children?: Array<OriginNestedRouteItem>;
+}
+
 export interface MatchedRouterItem extends BasicRouterItem {
   active: boolean;
 }
@@ -186,6 +202,4 @@ export interface LubanRouterProps {
   children?: CustomRenderer;
   // custom authority checker
   customCheckAuthority?: CustomCheckAuthority;
-  /** A fallback react tree to show when a Suspense child (like React.lazy) suspends */
-  fallback?: NonNullable<ReactNode> | null;
 }

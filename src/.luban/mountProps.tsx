@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { ComponentType } from "./index";
-import { DefaultRouteProps } from "./router/definitions";
+import { DefaultRouteProps } from "./definitions";
 
 import { store } from "./client.entry";
 

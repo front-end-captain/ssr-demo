@@ -5,15 +5,18 @@ import { StaticRouterContext, StaticRouterProps } from "react-router";
 import { init, RematchStore } from "@rematch/core";
 import { Provider } from "react-redux";
 
-import { DefaultNotFound } from "./router/defaultNotfound";
+import { DefaultNotFound } from "./defaultNotfound";
 import { warn } from "./log";
+import { flattenRoutes } from "./util";
 
 import entry, { RootModel } from "../";
 
 const Root = entry.provider || (({ children }) => <>{children}</>);
 
+const routes = flattenRoutes(entry.route.routes, entry.route.fallback);
+
 async function serverRender(
-  context: { path: string; initProps: {}, initState: {} },
+  context: { path: string; initProps: {}; initState: {} },
   staticRouterContext: StaticRouterContext,
   store: RematchStore<RootModel>,
 ) {
@@ -27,7 +30,7 @@ async function serverRender(
   if (["/favicon.ico", "/sockjs-node/info"].includes(context.path)) {
     // do nothing
   } else {
-    const activityRoute = entry.route.routes.find((routeItem) => {
+    const activityRoute = routes.find((routeItem) => {
       return pathToRegexp(routeItem.path, [], { strict: true }).test(context.path);
     });
 
