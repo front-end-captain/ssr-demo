@@ -12,7 +12,21 @@ const suspenseFallbackStyle: CSSProperties = {
 };
 
 export const defaultFallback = (props: LoadingComponentProps) => {
-  console.log("defaultFallback", props);
-
-  return <span style={suspenseFallbackStyle}>loading...</span>;
+  if (props.error) {
+    return (
+      <div>
+        Error! <button onClick={props.retry}>Retry</button>
+      </div>
+    );
+  } else if (props.timedOut) {
+    return (
+      <div>
+        Taking a long time... <button onClick={props.retry}>Retry</button>
+      </div>
+    );
+  } else if (props.pastDelay) {
+    return <div style={suspenseFallbackStyle}>loading...</div>;
+  } else {
+    return <div>loading...</div>;
+  }
 };

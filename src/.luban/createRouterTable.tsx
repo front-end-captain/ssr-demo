@@ -1,7 +1,7 @@
 import React, { ReactElement, isValidElement, createElement } from "react";
 import { Route, RouteComponentProps, Redirect, RedirectProps } from "react-router-dom";
 
-// import { mountProps } from "../mountProps";
+import { mountProps } from "./mountProps";
 
 import { Role, CustomCheckAuthority, RouteComponent, BasicRouterItem } from "./definitions";
 
@@ -45,9 +45,8 @@ function renderRouteComponent(
       return <Redirect {...generateRedirectRouteProps(route, defaultUnAuthorityPath)} />;
     }
 
-    // const C = mountProps(Component);
-    // return <C {...props} meta={meta} />;
-    return <Component {...props} meta={meta} />;
+    const C = mountProps(Component);
+    return <C {...props} meta={meta} />;
   }
 
   if (authorityChecker(role, authority)) {
@@ -55,9 +54,8 @@ function renderRouteComponent(
       return <Redirect {...generateRedirectRouteProps(route, defaultUnAuthorityPath)} />;
     }
 
-    // const C = mountProps(Component);
-    // return <C {...props} meta={meta} />;
-    return <Component {...props} meta={meta} />;
+    const C = mountProps(Component);
+    return <C {...props} meta={meta} />;
   }
 
   if (typeof unAuthorityPath === "string") {

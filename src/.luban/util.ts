@@ -1,8 +1,4 @@
-import { ComponentType } from "react";
-import Loadable, { LoadingComponentProps } from "react-loadable";
-import { NestedRouteItem, Role, OriginNestedRouteItem, BasicRouterItem } from "./definitions";
-
-import { defaultFallback } from "./defaultFallback";
+import { NestedRouteItem, Role, BasicRouterItem } from "./definitions";
 
 function checkAuthority(role: Role, authority?: Array<string | number>): boolean {
   if (typeof authority === "undefined") {
@@ -27,7 +23,6 @@ function filterUnPermissionRoute(
     }
 
     if (Array.isArray(route.children) && route.children.length > 0) {
-      // eslint-disable-next-line no-param-reassign
       route.children = filterUnPermissionRoute(route.children, role);
     }
 
@@ -35,37 +30,16 @@ function filterUnPermissionRoute(
   });
 }
 
-function flattenRoutes(
-  routes: Array<OriginNestedRouteItem>,
-  fallback?: ComponentType<LoadingComponentProps>,
-): Array<BasicRouterItem> {
+function flattenRoutes(routes: Array<NestedRouteItem>): Array<BasicRouterItem> {
   let routeList: Array<BasicRouterItem> = [];
 
   routes.forEach((route) => {
-    // console.log(route);
-    const path = route.component ? route.component.replace("@", "..") : undefined;
-
-    console.log("path", path);
-
-    routeList.push({
-      ...route,
-      component: path
-        ? Loadable({
-            // loader: () => import(`${path}`),
-            loader: () => import("@/pages/index"),
-            loading: fallback || defaultFallback,
-            modules: [path],
-            webpack: () => [require.resolveWebpack(path)],
-          })
-        : undefined,
-    });
+    routeList.push(route);
 
     if (Array.isArray(route.children) && route.children.length > 0) {
-      routeList = routeList.concat(flattenRoutes(route.children, fallback));
+      routeList = routeList.concat(flattenRoutes(route.children));
     }
   });
-
-  console.log("routeList", routeList);
 
   return routeList;
 }

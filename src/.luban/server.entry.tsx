@@ -4,21 +4,21 @@ import { pathToRegexp } from "path-to-regexp";
 import { StaticRouterContext, StaticRouterProps } from "react-router";
 import { init, RematchStore } from "@rematch/core";
 import { Provider } from "react-redux";
-
 import { DefaultNotFound } from "./defaultNotfound";
 import { warn } from "./log";
 import { flattenRoutes } from "./util";
 
 import entry, { RootModel } from "../";
+import staticRoute from "./staticRoutes";
 
 const Root = entry.provider || (({ children }) => <>{children}</>);
 
-const routes = flattenRoutes(entry.route.routes, entry.route.fallback);
+const _routes = flattenRoutes(staticRoute);
 
 async function serverRender(
   context: { path: string; initProps: {}; initState: {} },
   staticRouterContext: StaticRouterContext,
-  store: RematchStore<RootModel>,
+  store: RematchStore<RootModel> | null,
 ) {
   const staticRouterProps: StaticRouterProps = {
     location: context.path,
@@ -30,7 +30,7 @@ async function serverRender(
   if (["/favicon.ico", "/sockjs-node/info"].includes(context.path)) {
     // do nothing
   } else {
-    const activityRoute = routes.find((routeItem) => {
+    const activityRoute = _routes.find((routeItem) => {
       return pathToRegexp(routeItem.path, [], { strict: true }).test(context.path);
     });
 
@@ -67,7 +67,7 @@ async function serverRender(
         }
 
         context.initProps = initProps;
-        context.initState = store.getState();
+        context.initState = store?.getState() || {};
 
         App = (
           <StaticRouter {...staticRouterProps} context={staticRouterContext}>

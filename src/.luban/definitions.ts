@@ -7,7 +7,7 @@ import { ReactElement } from "react";
 import { RouteComponentProps } from "react-router-dom";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { StaticContext } from "react-router";
-import { LoadingComponentProps } from "react-loadable";
+import { LoadingComponentProps, LoadableComponent } from "react-loadable";
 
 import { ComponentType } from "./index";
 

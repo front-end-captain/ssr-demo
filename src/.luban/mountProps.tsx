@@ -53,6 +53,9 @@ export function mountProps(
     }
 
     async getInitialProps() {
+      if (WrappedComponent.preload) {
+        WrappedComponent = (await WrappedComponent.preload()).default;
+      }
       const extraProps = WrappedComponent.getInitialProps
         ? await WrappedComponent.getInitialProps({ path: this.props.location.pathname, store })
         : {};
