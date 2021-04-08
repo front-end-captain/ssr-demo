@@ -7,7 +7,7 @@
     "compile": "tsc --noEmit",
     "serve": "ssr serve --skip-produce",
     "serve:rewrite": "ssr serve",
-    "build": "ssr build --skip-produce",
+    "build": "ssr build --skip-produce --public-path '/'",
     "postinstall": "ssr produce"
   },
   "repository": {
