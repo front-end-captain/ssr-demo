@@ -1,4 +1,4 @@
-import React, { CSSProperties } from "react";
+import React, { CSSProperties, FunctionComponent } from "react";
 import { LoadingComponentProps } from "react-loadable";
 
 const suspenseFallbackStyle: CSSProperties = {
@@ -11,7 +11,15 @@ const suspenseFallbackStyle: CSSProperties = {
   color: "#ccc",
 };
 
-export const defaultFallback = (props: LoadingComponentProps) => {
+export const defaultLoadingProps: LoadingComponentProps = {
+  isLoading: false,
+  error: null,
+  timedOut: false,
+  pastDelay: false,
+  retry: () => undefined,
+};
+
+export const DefaultFallback: FunctionComponent<LoadingComponentProps> = (props) => {
   if (props.error) {
     return (
       <div>
