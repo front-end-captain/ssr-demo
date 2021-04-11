@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { ComponentType } from "./index";
-import { DefaultRouteProps } from "./definitions";
 
-import { store } from "./client.entry";
+import { DefaultRouteProps, ComponentType } from "./definitions";
+
+import { store } from "./store";
 
 interface MountPropsComponentState {
   extraProps: Record<string, unknown>;

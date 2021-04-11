@@ -1,16 +1,15 @@
 import React from "react";
 import { run } from "@/.luban";
-import { Models, RematchDispatch, RematchRootState } from "@rematch/core";
-
 import { App } from "./App";
+// import { Models, RematchDispatch, RematchRootState } from "@rematch/core";
 
-import { count } from "./models/count";
+// import { count } from "./models/count";
 
-export interface RootModel extends Models<RootModel> {
-  count: typeof count;
-}
-export type Dispatch = RematchDispatch<RootModel>;
-export type RootState = RematchRootState<RootModel>;
+// export interface RootModel extends Models<RootModel> {
+//   count: typeof count;
+// }
+// export type Dispatch = RematchDispatch<RootModel>;
+// export type RootState = RematchRootState<RootModel>;
 
 export default run({
   root: "root",
@@ -39,5 +38,5 @@ export default run({
       },
     ],
   },
-  models: { count },
+  // models: { count },
 });

@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { init, RematchStore } from "@rematch/core";
 import Loadable from "react-loadable";
 import { pathToRegexp } from "path-to-regexp";
 import cloneDeepWith from "lodash.clonedeepwith";
@@ -9,17 +8,13 @@ import cloneDeepWith from "lodash.clonedeepwith";
 import { LubanRouter } from "./router";
 import { flattenRoutes } from "./util";
 
-import entry, { RootModel } from "../";
+import entry from "../";
 import dynamicRoute from "./dynamicRoutes";
 import { BasicRouterItem } from "./definitions";
+import { store } from "./store";
 
 const Root = entry.provider || (({ children }) => <>{children}</>);
 const root = document.getElementById(entry.root || "root");
-
-export const store: RematchStore<RootModel> = init({
-  models: entry?.models,
-  redux: { initialState: window.__INITIAL_STATE__ || {} },
-});
 
 const _routes = flattenRoutes(dynamicRoute);
 
@@ -49,7 +44,8 @@ function App(props: { routes: BasicRouterItem[] }) {
     </LubanRouter>
   );
 
-  if (entry.models) {
+  if (store) {
+    // @ts-ignore
     return <Provider store={store}>{Container}</Provider>;
   }
 

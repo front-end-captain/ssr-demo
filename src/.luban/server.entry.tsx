@@ -8,7 +8,7 @@ import { DefaultNotFound } from "./defaultNotfound";
 import { warn } from "./log";
 import { flattenRoutes } from "./util";
 
-import entry, { RootModel } from "../";
+import entry from "../";
 import staticRoute from "./staticRoutes";
 
 const Root = entry.provider || (({ children }) => <>{children}</>);
@@ -18,7 +18,7 @@ const _routes = flattenRoutes(staticRoute);
 async function serverRender(
   context: { path: string; initProps: {}; initState: {} },
   staticRouterContext: StaticRouterContext,
-  store: RematchStore<RootModel> | null,
+  store: RematchStore | null,
 ) {
   const staticRouterProps: StaticRouterProps = {
     location: context.path,
@@ -63,6 +63,7 @@ async function serverRender(
       } else {
         let initProps = {};
         if (typeof ActivityComponent.getInitialProps === "function") {
+          // @ts-ignore
           initProps = await ActivityComponent.getInitialProps({ path: context.path, store });
         }
 

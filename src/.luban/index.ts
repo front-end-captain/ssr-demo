@@ -1,13 +1,9 @@
-import { ReactNode } from "react";
-import { RematchStore, InitConfig } from "@rematch/core";
+import { Config, Context as _Context } from "./store";
 
-import { OriginRouteConfig } from "./definitions";
-import { RootModel } from "@/index";
+export interface Context extends _Context {};
 
-export interface Context {
-  path: string;
-  store: RematchStore<RootModel> | null;
-  [k: string]: unknown;
+export function run(config: Config) {
+  return config;
 }
 
 interface Preload {
@@ -28,14 +24,3 @@ export interface FunctionComponent<OWN_PROPS = {}, INIT_PROPS = {}>
 export type ComponentType<P = {}, I = {}> = ClassComponent<P, I> | FunctionComponent<P, I>;
 
 export declare type Page<OWN_PROPS = {}, INIT_PROPS = {}> = ComponentType<OWN_PROPS, INIT_PROPS>;
-
-interface Config {
-  root?: string;
-  provider?: ({ children }: { children: ReactNode }) => JSX.Element;
-  route: OriginRouteConfig;
-  models?: InitConfig<RootModel>["models"];
-}
-
-export function run(config: Config) {
-  return config;
-}
