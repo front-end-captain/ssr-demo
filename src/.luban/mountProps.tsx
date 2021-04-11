@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
-import { DefaultRouteProps, ComponentType } from "./definitions";
+import { DefaultRouteProps } from "./definitions";
+import { ComponentType  } from "./index"
 
 import { store } from "./store";
 
