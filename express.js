@@ -6,9 +6,9 @@ const app = express();
 app.use(express.static("build"));
 
 app.use(async (req, res) => {
-  const document = await render({ path: req.path });
+  const { document } = await render({ path: req.path });
 
-  res.send(document.document);
+  res.send(document);
 });
 
 app.listen(3000, () => {

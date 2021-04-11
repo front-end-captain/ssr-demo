@@ -41,7 +41,9 @@
     "@types/react-loadable": "^5.5.5",
     "@types/react-router-dom": "^5.1.7",
     "express": "^4.17.1",
-    "luban-ssr": "^0.0.2-32",
+    "koa": "^2.13.1",
+    "koa-static": "^5.0.0",
+    "luban-ssr": "^0.0.2-29",
     "typescript": "3.8.3"
   }
 }
