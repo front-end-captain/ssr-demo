@@ -1,6 +1,5 @@
 import React from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { Context } from "@/.luban";
 
 interface AboutInitProps {
   my_name: string;
@@ -15,14 +14,6 @@ class About extends React.Component<
   AboutInitState,
   AboutInitProps
 > {
-  static getInitialProps(context: Context): Promise<AboutInitProps> {
-    return new Promise<AboutInitProps>((resolve) => {
-      setTimeout(() => {
-        resolve({ my_name: context.store?.getState().count.name || "" });
-      }, 1000);
-    });
-  }
-
   constructor(props: RouteComponentProps<{ name: string }> & AboutInitProps) {
     super(props);
 
