@@ -17,11 +17,14 @@ export interface EnhancedRouteComponentProps<
   C extends StaticContext = StaticContext
 > extends RouteComponentProps<Params, C> {
   meta?: M;
+  name?: string;
 }
 
 export type RouteMetaData = Record<string | number | symbol, unknown>;
 
-export type DefaultRouteProps = { meta?: RouteMetaData } & RouteComponentProps<any>;
+export type DefaultRouteProps = { meta?: RouteMetaData } & RouteComponentProps<any> & {
+    name?: string;
+  };
 
 export type RouteComponent<P extends DefaultRouteProps = any> = ComponentType<P>;
 

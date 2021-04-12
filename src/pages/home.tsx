@@ -1,28 +1,11 @@
-import React, { useState } from "react";
-import { RouteComponentProps } from "react-router-dom";
+import React from "react";
+import { EnhancedRouteComponentProps } from "@/.luban/";
 import { Page } from "@/.luban";
 
-interface HomeInitProps {
-  age: number;
-}
+import { Welcome } from "@/components/Welcome";
 
-const Home: Page<RouteComponentProps<{ name: string }>, HomeInitProps> = ({ age }) => {
-  const [count, setCount] = useState(1);
-
-  return (
-    <div>
-      Home page, {age}
-      <h4>{count}</h4> <button onClick={() => setCount(count + 1)}>count</button>
-    </div>
-  );
-};
-
-Home.getInitialProps = () => {
-  return new Promise<HomeInitProps>((resolve) => {
-    setTimeout(() => {
-      resolve({ age: 20 });
-    }, 1000);
-  });
+const Home: Page<EnhancedRouteComponentProps> = ({ name }) => {
+  return <Welcome pageName={name || "home"} />;
 };
 
 export default Home;

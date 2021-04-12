@@ -36,7 +36,7 @@ function renderRouteComponent(
   authorityChecker: CustomCheckAuthority,
   role?: Role,
 ): ReactElement {
-  const { component: Component, authority, unAuthorityPath, meta, redirect, path } = route;
+  const { component: Component, authority, unAuthorityPath, meta, redirect, path, name } = route;
 
   let defaultUnAuthorityPath = "/404";
 
@@ -46,7 +46,7 @@ function renderRouteComponent(
     }
 
     const C = mountProps(Component);
-    return <C {...props} meta={meta} />;
+    return <C {...props} meta={meta} name={name} />;
   }
 
   if (authorityChecker(role, authority)) {
@@ -55,7 +55,7 @@ function renderRouteComponent(
     }
 
     const C = mountProps(Component);
-    return <C {...props} meta={meta} />;
+    return <C {...props} meta={meta} name={name}  />;
   }
 
   if (typeof unAuthorityPath === "string") {

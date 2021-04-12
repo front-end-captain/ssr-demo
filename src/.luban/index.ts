@@ -1,7 +1,12 @@
 import { Config, Context as _Context } from "./store";
-import { OriginNestedRouteItem } from "./definitions";
+import {
+  OriginNestedRouteItem,
+  EnhancedRouteComponentProps as _EnhancedRouteComponentProps,
+} from "./definitions";
 
-export interface Context extends _Context {};
+export interface EnhancedRouteComponentProps extends _EnhancedRouteComponentProps {}
+
+export interface Context extends _Context {}
 
 export function run(config: Config) {
   return config;

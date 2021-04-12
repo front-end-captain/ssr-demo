@@ -4,6 +4,7 @@ const dynamicRoute = [{
   path: "/",
   redirect: "/home"
 }, {
+  name: "home",
   path: "/home",
   component: __IS_BROWSER__ ? Loadable({
     loader: () => import(
@@ -14,6 +15,7 @@ const dynamicRoute = [{
     webpack: () => [require.resolveWeak("@/pages/home")]
   }) : require("@/pages/home").default
 }, {
+  name: "about",
   path: "/about",
   component: __IS_BROWSER__ ? Loadable({
     loader: () => import(

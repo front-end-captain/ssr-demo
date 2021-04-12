@@ -2,8 +2,6 @@ import React from "react";
 import { StaticRouter, Redirect } from "react-router-dom";
 import { pathToRegexp } from "path-to-regexp";
 import { StaticRouterContext, StaticRouterProps } from "react-router";
-import { init, RematchStore } from "@rematch/core";
-import { Provider } from "react-redux";
 import { DefaultNotFound } from "./defaultNotfound";
 import { warn } from "./log";
 import { flattenRoutes } from "./util";
@@ -18,7 +16,7 @@ const _routes = flattenRoutes(staticRoute);
 async function serverRender(
   context: { path: string; initProps: {}; initState: {} },
   staticRouterContext: StaticRouterContext,
-  store: RematchStore | null,
+  store: null,
 ) {
   const staticRouterProps: StaticRouterProps = {
     location: context.path,
@@ -68,7 +66,6 @@ async function serverRender(
         }
 
         context.initProps = initProps;
-        context.initState = store?.getState() || {};
 
         App = (
           <StaticRouter {...staticRouterProps} context={staticRouterContext}>
@@ -81,24 +78,7 @@ async function serverRender(
     }
   }
 
-  if (entry.models && store) {
-    return <Provider store={store}>{App}</Provider>;
-  }
-
   return App;
-}
-
-export function createStore(initState: any) {
-  if (entry.models) {
-    return init({
-      models: entry.models,
-      redux: {
-        initialState: initState,
-      },
-    });
-  }
-
-  return null;
 }
 
 export default serverRender;

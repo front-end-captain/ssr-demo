@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/front-end-captain/ssr-demo#readme",
   "dependencies": {
+    "isomorphic-style-loader": "^5.1.0",
     "lodash.clonedeepwith": "^4.5.0",
     "path-to-regexp": "^6.2.0",
     "react": "^16.14.0",
@@ -40,7 +41,7 @@
     "express": "^4.17.1",
     "koa": "^2.13.1",
     "koa-static": "^5.0.0",
-    "luban-ssr": "^0.0.2-38",
+    "luban-ssr": "^0.0.2-42",
     "typescript": "3.8.3"
   }
 }

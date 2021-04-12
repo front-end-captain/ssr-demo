@@ -6,10 +6,12 @@ export default routes([
     redirect: "/home",
   },
   {
+    name: "home", 
     path: "/home",
     component: "@/pages/home",
   },
   {
+    name: "about", 
     path: "/about",
     component: "@/pages/about",
   },

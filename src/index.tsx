@@ -1,13 +1,13 @@
 import React from "react";
 import { run } from "@/.luban";
 
-import { App } from "./App";
+import { Nav } from "@/components/Nav";
 
-import routes from "./routes";
+import routes from "@/routes";
 
 export default run({
   root: "root",
-  wrapper: (props) => <App {...props} />,
+  wrapper: (props) => <Nav {...props} />,
   route: {
     routes,
   },

@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Provider } from "react-redux";
 import Loadable from "react-loadable";
 import { pathToRegexp } from "path-to-regexp";
 import cloneDeepWith from "lodash.clonedeepwith";
@@ -11,7 +10,7 @@ import { flattenRoutes } from "./util";
 import entry from "../";
 import dynamicRoute from "./dynamicRoutes";
 import { BasicRouterItem } from "./definitions";
-import { store } from "./store";
+
 
 const Root = entry.wrapper || (({ children }) => <>{children}</>);
 const root = document.getElementById(entry.root || "root");
@@ -44,10 +43,6 @@ function App(props: { routes: BasicRouterItem[] }) {
     </LubanRouter>
   );
 
-  if (store) {
-    // @ts-ignore
-    return <Provider store={store}>{Container}</Provider>;
-  }
 
   return Container;
 }
