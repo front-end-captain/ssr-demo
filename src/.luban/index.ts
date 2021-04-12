@@ -1,9 +1,14 @@
 import { Config, Context as _Context } from "./store";
+import { OriginNestedRouteItem } from "./definitions";
 
 export interface Context extends _Context {};
 
 export function run(config: Config) {
   return config;
+}
+
+export function routes(routes: OriginNestedRouteItem[]) {
+  return routes;
 }
 
 interface Preload {

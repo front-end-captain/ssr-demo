@@ -11,7 +11,7 @@ import { flattenRoutes } from "./util";
 import entry from "../";
 import staticRoute from "./staticRoutes";
 
-const Root = entry.provider || (({ children }) => <>{children}</>);
+const Root = entry.wrapper || (({ children }) => <>{children}</>);
 
 const _routes = flattenRoutes(staticRoute);
 

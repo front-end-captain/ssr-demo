@@ -6,22 +6,19 @@ import { OriginRouteConfig } from "./definitions";
 // @ts-ignore
 import entry from "../";
 
-import { RootModel } from "../";
 
-export const store: RematchStore<RootModel> = init({
-  models: entry?.models,
-  redux: { initialState: window ? window.__INITIAL_STATE__ || {} : {} },
-});
+
+export const store: null = null;  
 
 export interface Config {
   root?: string;
-  provider?: ({ children }: { children: ReactNode }) => JSX.Element;
+  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
   route: OriginRouteConfig;
-  models?: InitConfig<RootModel>["models"];
+  models?: InitConfig["models"];
 }
 
 export interface Context {
   path: string;
-  store: RematchStore<RootModel>;
+  store: null;
   [k: string]: unknown;
 }

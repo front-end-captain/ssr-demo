@@ -43,7 +43,7 @@
     "express": "^4.17.1",
     "koa": "^2.13.1",
     "koa-static": "^5.0.0",
-    "luban-ssr": "^0.0.2-34",
+    "luban-ssr": "^0.0.2-38",
     "typescript": "3.8.3"
   }
 }

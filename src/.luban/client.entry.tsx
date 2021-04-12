@@ -13,7 +13,7 @@ import dynamicRoute from "./dynamicRoutes";
 import { BasicRouterItem } from "./definitions";
 import { store } from "./store";
 
-const Root = entry.provider || (({ children }) => <>{children}</>);
+const Root = entry.wrapper || (({ children }) => <>{children}</>);
 const root = document.getElementById(entry.root || "root");
 
 const _routes = flattenRoutes(dynamicRoute);
