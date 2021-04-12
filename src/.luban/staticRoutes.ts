@@ -4,11 +4,11 @@ const staticRoute = [{
   path: "/",
   redirect: "/home"
 }, {
-  name: "home",
+  name: "Home",
   path: "/home",
   component: HOME
 }, {
-  name: "about",
+  name: "About",
   path: "/about",
   component: ABOUT
 }];
