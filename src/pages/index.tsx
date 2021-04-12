@@ -29,7 +29,7 @@ const Index: Page<RouteComponentProps<{ name: string }>, IndexInitProps> = ({ in
   );
 };
 
-Index.getInitialProps = function(context) {
+Index.getInitialProps = function (context) {
   context.store?.dispatch.count.increment(1);
 
   return { initCount: context.store?.getState().count.count || 0 };
