@@ -2,7 +2,7 @@ import React, { CSSProperties, FunctionComponent } from "react";
 import { LoadingComponentProps } from "react-loadable";
 
 const suspenseFallbackStyle: CSSProperties = {
-  width: "100vh",
+  width: "100%",
   height: "100vh",
   display: "flex",
   justifyContent: "center",

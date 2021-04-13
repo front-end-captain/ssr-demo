@@ -7,7 +7,6 @@ const Nav: FunctionComponent = (props) => {
   return (
     <div className={styles["app-wrapper"]}>
       <div className="nav-wrapper">
-        &nbsp;&nbsp;&nbsp;
         <NavLink to="/home" activeClassName="activity" exact>
           Home
         </NavLink>
