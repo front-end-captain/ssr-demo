@@ -5,7 +5,7 @@ import { Page } from "@/.luban";
 import { Welcome } from "@/components/Welcome";
 
 const Home: Page<EnhancedRouteComponentProps> = ({ name }) => {
-  return <Welcome pageName={name || "home"} />;
+  return <Welcome pageName={name || "Home"} />;
 };
 
 export default Home;

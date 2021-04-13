@@ -2,12 +2,12 @@ import React, { CSSProperties, FunctionComponent } from "react";
 import { LoadingComponentProps } from "react-loadable";
 
 const suspenseFallbackStyle: CSSProperties = {
-  width: "100%",
-  height: "100%",
+  width: "100vh",
+  height: "100vh",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  fontSize: "0.4rem",
+  fontSize: "2rem",
   color: "#ccc",
 };
 
@@ -35,6 +35,6 @@ export const DefaultFallback: FunctionComponent<LoadingComponentProps> = (props)
   } else if (props.pastDelay) {
     return <div style={suspenseFallbackStyle}>loading...</div>;
   } else {
-    return <div>loading...</div>;
+    return null;
   }
 };

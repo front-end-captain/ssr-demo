@@ -9,7 +9,7 @@ class About extends React.Component<EnhancedRouteComponentProps, {}> {
   }
 
   render(): JSX.Element {
-    return <Welcome pageName={this.props.name || "about"} />;
+    return <Welcome pageName={this.props.name || "About"} />;
   }
 }
 
