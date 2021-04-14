@@ -1,5 +1,9 @@
-import React, { CSSProperties, FunctionComponent } from "react";
+import React, { CSSProperties, FunctionComponent, useEffect } from "react";
 import { LoadingComponentProps } from "react-loadable";
+
+import { TopProgress } from "./topProgress";
+
+const progressBar = new TopProgress();
 
 const suspenseFallbackStyle: CSSProperties = {
   width: "100%",
@@ -8,7 +12,20 @@ const suspenseFallbackStyle: CSSProperties = {
   justifyContent: "center",
   alignItems: "center",
   fontSize: "2rem",
-  color: "#ccc",
+};
+
+const retryBtnStyle: CSSProperties = {
+  padding: "0.2rem 0.6rem",
+  borderRadius: "1.8rem",
+  outline: "none",
+  border: "1px solid #61dafb",
+  marginTop: "0.4rem",
+  backgroundColor: "#fff",
+  color: "#555",
+  fontSize: "inherit",
+  marginLeft: "1rem",
+  fontWeight: "bold",
+  cursor: "pointer",
 };
 
 export const defaultLoadingProps: LoadingComponentProps = {
@@ -20,20 +37,41 @@ export const defaultLoadingProps: LoadingComponentProps = {
 };
 
 export const DefaultFallback: FunctionComponent<LoadingComponentProps> = (props) => {
+  useEffect(() => {
+    progressBar.show();
+
+    return () => {
+      progressBar.finish();
+    };
+  }, []);
+
+  const retry = () => {
+    progressBar.show();
+
+    props.retry();
+  };
+
   if (props.error) {
+    progressBar.finish();
     return (
-      <div>
-        Error! <button onClick={props.retry}>Retry</button>
+      <div style={suspenseFallbackStyle}>
+        Ops! Something Wrong
+        <button style={retryBtnStyle} onClick={retry}>
+          Retry
+        </button>
       </div>
     );
   } else if (props.timedOut) {
+    progressBar.finish();
+
     return (
-      <div>
-        Taking a long time... <button onClick={props.retry}>Retry</button>
+      <div style={suspenseFallbackStyle}>
+        Taking a long time...
+        <button style={retryBtnStyle} onClick={retry}>
+          Retry
+        </button>
       </div>
     );
-  } else if (props.pastDelay) {
-    return <div style={suspenseFallbackStyle}>loading...</div>;
   } else {
     return null;
   }

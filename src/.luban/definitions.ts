@@ -7,7 +7,6 @@ import { ReactElement } from "react";
 import { RouteComponentProps } from "react-router-dom";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { StaticContext } from "react-router";
-import { LoadingComponentProps } from "react-loadable";
 
 import { ComponentType } from "./index";
 
@@ -76,8 +75,8 @@ export interface RouteConfig {
    */
   routes: Array<NestedRouteItem>;
 
-  /** A fallback react tree to show when a Suspense child (like React.lazy) suspends */
-  fallback?: ComponentType<LoadingComponentProps>;
+  /** A fallback react tree to show when a Suspense child suspends */
+  fallback?: string;
 }
 
 export interface OriginRouteConfig extends Omit<RouteConfig, "routes"> {

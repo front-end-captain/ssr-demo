@@ -1,6 +1,6 @@
 import { Config, Context as _Context } from "./store";
 import {
-  OriginNestedRouteItem,
+  OriginRouteConfig,
   EnhancedRouteComponentProps as _EnhancedRouteComponentProps,
 } from "./definitions";
 
@@ -12,8 +12,8 @@ export function run(config: Config) {
   return config;
 }
 
-export function routes(routes: OriginNestedRouteItem[]) {
-  return routes;
+export function route(routeConfig: OriginRouteConfig) {
+  return routeConfig;
 }
 
 interface Preload {

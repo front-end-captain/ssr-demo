@@ -3,12 +3,10 @@ import { run } from "@/.luban";
 
 import { Nav } from "@/components/Nav";
 
-import routes from "@/routes";
+import route from "@/route";
 
 export default run({
-  root: "root",
   wrapper: (props) => <Nav {...props} />,
-  route: {
-    routes,
-  },
+  route,
+  // models: { count },
 });
